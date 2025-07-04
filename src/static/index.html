@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Controle de Estoque - Rastreadores</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Tela de Login -->
+    <div id="login-page" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1><i class="fas fa-map-marker-alt"></i> Rastreadores</h1>
+                <p>Sistema de Controle de Estoque</p>
+            </div>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Usuário</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i> Entrar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Aplicação Principal -->
+    <div id="main-app" class="app-container" style="display: none;">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-map-marker-alt"></i> Rastreadores</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="menu-item" data-section="movimentacoes" id="menu-movimentacoes">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Movimentações</span>
+                </li>
+                <li class="menu-item" data-section="historico-movimentacoes">
+                    <i class="fas fa-history"></i>
+                    <span>Histórico de Movimentações</span>
+                </li>
+                <li class="menu-item" data-section="configuracao">
+                    <i class="fas fa-users"></i>
+                    <span>Configuração</span>
+                </li>
+                <li class="menu-item" data-section="historico-config">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Histórico de Config</span>
+                </li>
+                <li class="menu-item" data-section="estoque">
+                    <i class="fas fa-boxes"></i>
+                    <span>Estoque</span>
+                </li>
+                <li class="menu-item" data-section="usuarios" id="menu-usuarios" style="display: none;">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Usuários</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <h1 id="page-title">Dashboard</h1>
+                <div class="header-actions">
+                    <div class="user-info">
+                        <span id="user-name">Usuário</span>
+                        <span class="user-badge" id="user-badge">Configurador</span>
+                    </div>
+                    <button id="refresh-btn" class="btn btn-secondary">
+                        <i class="fas fa-sync-alt"></i> Atualizar
+                    </button>
+                    <button id="logout-btn" class="btn btn-danger">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard -->
+            <section id="dashboard" class="content-section active">
+                <div class="dashboard-cards">
+                    <div class="card">
+                        <i class="card-icon fas fa-boxes"></i>
+                        <div class="card-content">
+                            <h3>Total em Estoque</h3>
+                            <div class="card-number" id="total-estoque">0</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <i class="card-icon fas fa-exchange-alt"></i>
+                        <div class="card-content">
+                            <h3>Movimentações do Mês</h3>
+                            <div class="card-number" id="movimentacoes-mes">0</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <i class="card-icon fas fa-users"></i>
+                        <div class="card-content">
+                            <h3>Colaboradores Ativos</h3>
+                            <div class="card-number" id="colaboradores-ativos">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-content">
+                    <div class="card">
+                        <h3>Últimas Movimentações</h3>
+                        <div class="table-container">
+                            <table id="ultimas-movimentacoes-table">
+                                <thead>
+                                    <tr>
+                                        <th>Data</th>
+                                        <th>Modelo</th>
+                                        <th>Operadora</th>
+                                        <th>Quantidade</th>
+                                        <th>Tipo</th>
+                                        <th>Operador</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Movimentações -->
+            <section id="movimentacoes" class="content-section">
+                <div class="card">
+                    <h3>Registrar Nova Movimentação</h3>
+                    <form id="movimentacao-form" class="form-grid">
+                        <div class="form-group">
+                            <label for="data">Data</label>
+                            <input type="date" id="data" name="data" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Modelo do Rastreador</label>
+                            <div class="checkbox-group" id="modelo-checkboxes">
+                                <!-- Será preenchido dinamicamente -->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Operadora (chip vinculado)</label>
+                            <div class="checkbox-group" id="operadora-checkboxes">
+                                <!-- Será preenchido dinamicamente -->
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantidade">Quantidade</label>
+                            <input type="number" id="quantidade" name="quantidade" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tipo">Tipo</label>
+                            <select id="tipo" name="tipo" required>
+                                <option value="">Selecione...</option>
+                                <option value="Entrada">Entrada</option>
+                                <option value="Saída">Saída</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="solicitante">Solicitante</label>
+                            <input type="text" id="solicitante" name="solicitante" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <button type="submit" class="btn btn-primary btn-large">
+                                <i class="fas fa-plus"></i> Registrar Movimentação
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Movimentações Recentes</h3>
+                    <div class="table-container">
+                        <table id="movimentacoes-table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Modelo</th>
+                                    <th>Operadora</th>
+                                    <th>Quantidade</th>
+                                    <th>Tipo</th>
+                                    <th>Solicitante</th>
+                                    <th>Operador</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Histórico de Movimentações -->
+            <section id="historico-movimentacoes" class="content-section">
+                <div class="filters">
+                    <div class="form-group">
+                        <label for="filtro-mes">Filtrar por Mês/Ano</label>
+                        <input type="month" id="filtro-mes">
+                    </div>
+                    <button id="filtrar-historico-btn" class="btn btn-secondary">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                    <button id="backup-reset-btn" class="btn btn-danger">
+                        <i class="fas fa-archive"></i> Backup e Reset Mensal
+                    </button>
+                </div>
+
+                <div class="card">
+                    <h3>Histórico de Movimentações</h3>
+                    <div class="table-container">
+                        <table id="historico-movimentacoes-table">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Modelo</th>
+                                    <th>Operadora</th>
+                                    <th>Quantidade</th>
+                                    <th>Tipo</th>
+                                    <th>Solicitante</th>
+                                    <th>Operador</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Configuração -->
+            <section id="configuracao" class="content-section">
+                <div class="card">
+                    <h3>Registrar Configuração Diária</h3>
+                    <form id="configuracao-form" class="form-inline">
+                        <div class="form-group">
+                            <label for="quantidade-config">Quantidade Configurada Hoje</label>
+                            <input type="number" id="quantidade-config" name="quantidade" min="1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Registrar
+                        </button>
+                    </form>
+                </div>
+
+                <div class="card">
+                    <h3>Colaboradores</h3>
+                    <div class="table-container">
+                        <table id="colaboradores-table">
+                            <thead>
+                                <tr>
+                                    <th>Nome do Colaborador</th>
+                                    <th>Quantidade do Dia</th>
+                                    <th>Total do Mês</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Histórico de Config -->
+            <section id="historico-config" class="content-section">
+                <div class="filters">
+                    <button id="salvar-historico-btn" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Salvar Histórico Diário
+                    </button>
+                </div>
+
+                <div id="historico-config-container">
+                    <!-- Será preenchido dinamicamente -->
+                </div>
+            </section>
+
+            <!-- Estoque -->
+            <section id="estoque" class="content-section">
+                <div class="card">
+                    <h3>Estoque Atual</h3>
+                    <div class="table-container">
+                        <table id="estoque-table">
+                            <thead>
+                                <tr>
+                                    <th>Modelo do Rastreador</th>
+                                    <th>Operadora</th>
+                                    <th>Quantidade em Estoque</th>
+                                    <th>Última Alteração</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Resumo por Filtro</h3>
+                        <div class="card-actions">
+                            <div class="form-group">
+                                <label for="filtro-resumo">Filtrar por</label>
+                                <select id="filtro-resumo">
+                                    <option value="modelo">Modelo</option>
+                                    <option value="operadora">Operadora</option>
+                                </select>
+                            </div>
+                            <button id="filtrar-resumo-btn" class="btn btn-secondary">
+                                <i class="fas fa-filter"></i> Filtrar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="resumo-estoque-table">
+                            <thead id="resumo-header">
+                                <tr>
+                                    <th>Modelo</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Usuários (apenas para administradores) -->
+            <section id="usuarios" class="content-section">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Gerenciar Usuários</h3>
+                        <button id="novo-usuario-btn" class="btn btn-primary">
+                            <i class="fas fa-user-plus"></i> Novo Usuário
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table id="usuarios-table">
+                            <thead>
+                                <tr>
+                                    <th>Usuário</th>
+                                    <th>Tipo de Acesso</th>
+                                    <th>Status</th>
+                                    <th>Data de Criação</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal para Edição de Usuário -->
+    <div id="user-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="user-modal-title">Novo Usuário</h3>
+                <button id="user-modal-close-btn" class="modal-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="user-form">
+                <input type="hidden" id="user-id">
+                <div class="form-group">
+                    <label for="user-username">Nome de Usuário</label>
+                    <input type="text" id="user-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="user-password">Senha</label>
+                    <input type="password" id="user-password" name="password">
+                    <small>Deixe em branco para manter a senha atual</small>
+                </div>
+                <div class="form-group">
+                    <label for="user-tipo">Tipo de Acesso</label>
+                    <select id="user-tipo" name="tipo_acesso" required>
+                        <option value="configurador">Configurador</option>
+                        <option value="administrador">Administrador</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="user-ativo" name="ativo" checked>
+                        Usuário Ativo
+                    </label>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" id="user-modal-cancel-btn" class="btn btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Carregando...</p>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
