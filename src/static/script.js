@@ -105,6 +105,7 @@ function setupEventListeners() {
     document.getElementById('salvar-historico-btn').addEventListener('click', handleSalvarHistorico);
     document.getElementById('filtrar-historico-btn').addEventListener('click', handleFiltrarHistorico);
     document.getElementById('filtrar-resumo-btn').addEventListener('click', handleFiltrarResumo);
+    document.getElementById('filtrar-estoque-btn').addEventListener('click', handleFiltrarEstoque);
 
     // Usuários (apenas admin)
     document.getElementById('novo-usuario-btn').addEventListener('click', () => openUserModal());
@@ -181,6 +182,7 @@ async function loadOpcoes() {
         if (response.ok) {
             opcoes = data;
             createCheckboxes();
+            populateEstoqueFilters();
             initializeForm();
         }
     } catch (error) {
@@ -217,6 +219,31 @@ function createCheckboxes() {
             <label for="operadora-${operadora}">${operadora}</label>
         `;
         operadoraContainer.appendChild(checkboxItem);
+    });
+}
+
+// Preencher selects de filtro de estoque
+function populateEstoqueFilters() {
+    const modeloSelect = document.getElementById('filtro-modelo');
+    const operadoraSelect = document.getElementById('filtro-operadora');
+
+    if (!modeloSelect || !operadoraSelect) return;
+
+    modeloSelect.innerHTML = '<option value="Todos">Todos</option>';
+    operadoraSelect.innerHTML = '<option value="Todos">Todos</option>';
+
+    opcoes.modelos.forEach(modelo => {
+        const opt = document.createElement('option');
+        opt.value = modelo;
+        opt.textContent = modelo;
+        modeloSelect.appendChild(opt);
+    });
+
+    opcoes.operadoras.forEach(op => {
+        const opt = document.createElement('option');
+        opt.value = op;
+        opt.textContent = op;
+        operadoraSelect.appendChild(opt);
     });
 }
 
@@ -301,7 +328,9 @@ function loadSectionData(section) {
             loadHistoricoConfig();
             break;
         case 'estoque':
-            loadEstoque();
+            const modelo = document.getElementById('filtro-modelo').value;
+            const operadora = document.getElementById('filtro-operadora').value;
+            loadEstoque(modelo, operadora);
             loadResumoEstoque();
             break;
         case 'usuarios':
@@ -442,10 +471,10 @@ async function loadHistoricoConfig() {
     }
 }
 
-async function loadEstoque() {
+async function loadEstoque(modelo = 'Todos', operadora = 'Todos') {
     try {
         showLoading();
-        const response = await fetch(`${API_BASE}/estoque`, {
+        const response = await fetch(`${API_BASE}/estoque?modelo=${encodeURIComponent(modelo)}&operadora=${encodeURIComponent(operadora)}`, {
             credentials: 'include'
         });
         const data = await response.json();
@@ -454,14 +483,17 @@ async function loadEstoque() {
             const tbody = document.querySelector('#estoque-table tbody');
             tbody.innerHTML = '';
 
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><i class="fas fa-boxes"></i><br>Nenhum item em estoque</td></tr>';
+            if (data.estoque.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state"><i class="fas fa-boxes"></i><br>Nenhum item encontrado</td></tr>';
             } else {
-                data.forEach(item => {
+                data.estoque.forEach(item => {
                     const row = createEstoqueRow(item);
                     tbody.appendChild(row);
                 });
             }
+
+            const totalDiv = document.getElementById('estoque-total');
+            totalDiv.textContent = `Total: ${data.total}`;
         } else {
             showToast(data.error || 'Erro ao carregar estoque', 'error');
         }
@@ -922,6 +954,12 @@ function handleFiltrarHistorico() {
 function handleFiltrarResumo() {
     const filtro = document.getElementById('filtro-resumo').value;
     loadResumoEstoque(filtro);
+}
+
+function handleFiltrarEstoque() {
+    const modelo = document.getElementById('filtro-modelo').value;
+    const operadora = document.getElementById('filtro-operadora').value;
+    loadEstoque(modelo, operadora);
 }
 
 // Funções do modal de usuário
