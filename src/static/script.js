@@ -111,6 +111,7 @@ function setupEventListeners() {
     document.getElementById('user-form').addEventListener('submit', handleUserSubmit);
     document.getElementById('user-modal-close-btn').addEventListener('click', closeUserModal);
     document.getElementById('user-modal-cancel-btn').addEventListener('click', closeUserModal);
+    document.getElementById('user-modal-delete-btn').addEventListener('click', handleUserDelete);
     
     // Fechar modal clicando fora
     document.getElementById('user-modal').addEventListener('click', (e) => {
@@ -805,6 +806,39 @@ async function handleUserSubmit(e) {
     }
 }
 
+async function handleUserDelete() {
+    const userId = document.getElementById('user-id').value;
+    if (!userId) {
+        return;
+    }
+
+    if (!confirm('Tem certeza que deseja excluir este usuário?')) {
+        return;
+    }
+
+    try {
+        showLoading();
+        const response = await fetch(`${API_BASE}/auth/users/${userId}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            showToast('Usuário excluído com sucesso!', 'success');
+            closeUserModal();
+            loadUsuarios();
+        } else {
+            showToast(result.error || 'Erro ao excluir usuário', 'error');
+        }
+    } catch (error) {
+        showToast('Erro de conexão', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
 // Handlers de ações
 async function handleBackupReset() {
     if (!confirm('Tem certeza que deseja fazer backup e resetar o histórico de movimentações?')) {
@@ -877,7 +911,8 @@ function openUserModal(user = null) {
     const modal = document.getElementById('user-modal');
     const title = document.getElementById('user-modal-title');
     const form = document.getElementById('user-form');
-    
+    const deleteBtn = document.getElementById('user-modal-delete-btn');
+
     if (user) {
         title.textContent = 'Editar Usuário';
         document.getElementById('user-id').value = user.id;
@@ -885,13 +920,15 @@ function openUserModal(user = null) {
         document.getElementById('user-password').value = '';
         document.getElementById('user-tipo').value = user.tipo_acesso;
         document.getElementById('user-ativo').checked = user.ativo;
+        deleteBtn.style.display = 'inline-block';
     } else {
         title.textContent = 'Novo Usuário';
         form.reset();
         document.getElementById('user-id').value = '';
         document.getElementById('user-ativo').checked = true;
+        deleteBtn.style.display = 'none';
     }
-    
+
     modal.style.display = 'flex';
 }
 
