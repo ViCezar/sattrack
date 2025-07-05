@@ -523,10 +523,28 @@ async function loadUsuarios() {
             if (data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><i class="fas fa-users"></i><br>Nenhum usuário encontrado</td></tr>';
             } else {
-                data.forEach(user => {
-                    const row = createUserRow(user);
-                    tbody.appendChild(row);
-                });
+                const admins = data.filter(u => u.tipo_acesso === 'administrador');
+                const configuradores = data.filter(u => u.tipo_acesso === 'configurador');
+
+                if (admins.length > 0) {
+                    const headerRow = document.createElement('tr');
+                    headerRow.innerHTML = '<td colspan="5" class="user-section-header">Administradores</td>';
+                    tbody.appendChild(headerRow);
+                    admins.forEach(user => {
+                        const row = createUserRow(user);
+                        tbody.appendChild(row);
+                    });
+                }
+
+                if (configuradores.length > 0) {
+                    const headerRow = document.createElement('tr');
+                    headerRow.innerHTML = '<td colspan="5" class="user-section-header">Configuradores</td>';
+                    tbody.appendChild(headerRow);
+                    configuradores.forEach(user => {
+                        const row = createUserRow(user);
+                        tbody.appendChild(row);
+                    });
+                }
             }
         } else {
             showToast(data.error || 'Erro ao carregar usuários', 'error');
