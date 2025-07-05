@@ -424,7 +424,7 @@ async function loadColaboradores() {
             tbody.innerHTML = '';
 
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="empty-state"><i class="fas fa-users"></i><br>Nenhum colaborador encontrado</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state"><i class="fas fa-users"></i><br>Nenhum configurador encontrado</td></tr>';
             } else {
                 data.forEach(colaborador => {
                     const row = createColaboradorRow(colaborador);
@@ -432,7 +432,7 @@ async function loadColaboradores() {
                 });
             }
         } else {
-            showToast(data.error || 'Erro ao carregar colaboradores', 'error');
+            showToast(data.error || 'Erro ao carregar configuradores', 'error');
         }
     } catch (error) {
         showToast('Erro de conexão', 'error');
