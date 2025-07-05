@@ -59,13 +59,16 @@ function showMainApp() {
     
     // Controlar visibilidade dos menus baseado no tipo de acesso
     const menuMovimentacoes = document.getElementById('menu-movimentacoes');
+    const menuHistoricoMovimentacoes = document.getElementById('menu-historico-movimentacoes');
     const menuUsuarios = document.getElementById('menu-usuarios');
     
     if (currentUser.tipo_acesso === 'administrador') {
         menuMovimentacoes.style.display = 'flex';
+        menuHistoricoMovimentacoes.style.display = 'flex';
         menuUsuarios.style.display = 'flex';
     } else {
         menuMovimentacoes.style.display = 'none';
+        menuHistoricoMovimentacoes.style.display = 'none';
         menuUsuarios.style.display = 'none';
     }
     
@@ -231,6 +234,11 @@ function navigateToSection(section) {
     // Verificar permissões
     if (section === 'movimentacoes' && currentUser.tipo_acesso !== 'administrador') {
         showToast('Acesso negado. Apenas administradores podem acessar movimentações.', 'error');
+        return;
+    }
+
+    if (section === 'historico-movimentacoes' && currentUser.tipo_acesso !== 'administrador') {
+        showToast('Acesso negado. Apenas administradores podem acessar histórico de movimentações.', 'error');
         return;
     }
     

@@ -66,9 +66,9 @@ def get_dashboard():
 
 @rastreador_bp.route('/movimentacoes', methods=['GET'])
 def get_movimentacoes():
-    auth_error = require_auth()
-    if auth_error:
-        return auth_error
+    admin_error = require_admin()
+    if admin_error:
+        return admin_error
     
     try:
         movimentacoes = Movimentacao.query.order_by(desc(Movimentacao.data_criacao)).all()
