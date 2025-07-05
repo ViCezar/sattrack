@@ -57,10 +57,7 @@ Abra seu navegador e acesse `http://localhost:5000`
 - Senha: admin123
 - Tipo: Administrador
 
-**Configuradores de Exemplo:**
-- Usuário: giovany / Senha: 123456 / Tipo: Configurador
-- Usuário: vitor / Senha: 123456 / Tipo: Configurador  
-- Usuário: miguel / Senha: 123456 / Tipo: Configurador
+
 
 ### Configuração para Produção
 

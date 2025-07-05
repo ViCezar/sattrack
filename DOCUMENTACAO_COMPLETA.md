@@ -283,10 +283,7 @@ A containerização da aplicação utilizando Docker facilitaria deployment em a
 - Senha: admin123
 - Tipo: Administrador
 
-**Configuradores de Exemplo:**
-- Usuário: giovany / Senha: 123456 / Tipo: Configurador
-- Usuário: vitor / Senha: 123456 / Tipo: Configurador  
-- Usuário: miguel / Senha: 123456 / Tipo: Configurador
+
 
 ---
 

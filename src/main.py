@@ -50,21 +50,10 @@ def create_app():
             admin.set_password('admin123')
             db.session.add(admin)
             
-            # Criar alguns usuários configuradores de exemplo
-            configuradores = ['giovany', 'vitor', 'miguel']
-            for nome in configuradores:
-                user = User(username=nome, tipo_acesso='configurador')
-                user.set_password('123456')
-                db.session.add(user)
-                
-                # Criar colaborador correspondente
-                colaborador = Colaborador(nome=nome)
-                db.session.add(colaborador)
-            
             db.session.commit()
             print("Usuários padrão criados:")
             print("Admin: admin / admin123")
-            print("Configuradores: giovany, vitor, miguel / 123456")
+
 
         # Criar combinações de estoque padrão
         from src.models.rastreador import Estoque
