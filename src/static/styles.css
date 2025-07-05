@@ -432,6 +432,12 @@ table {
     background: white;
 }
 
+/* Pequeno espaçamento entre os modelos de rastreadores na aba Estoque */
+#estoque-table {
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+}
+
 table th {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     padding: 1rem;

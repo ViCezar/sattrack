@@ -101,9 +101,14 @@ def update_user(user_id):
     try:
         user = User.query.get_or_404(user_id)
         data = request.get_json()
-        
+
         if 'username' in data:
             user.username = data['username']
+        if user.tipo_acesso == 'administrador' and session.get('username') != 'Vinícius Cezar' and user.username != session.get('username'):
+            # Administradores comuns não podem inativar ou alterar outros administradores
+            if ('ativo' in data and data['ativo'] is False) or (
+                    'tipo_acesso' in data and data['tipo_acesso'] != 'administrador'):
+                return jsonify({'error': 'Apenas o administrador Vinícius Cezar pode inativar ou alterar outros administradores'}), 403
         if 'tipo_acesso' in data:
             user.tipo_acesso = data['tipo_acesso']
         if 'ativo' in data:
@@ -129,6 +134,10 @@ def delete_user(user_id):
     
     try:
         user = User.query.get_or_404(user_id)
+
+        # Administradores comuns não podem excluir outros administradores
+        if user.tipo_acesso == 'administrador' and session.get('username') != 'Vinícius Cezar' and user.username != session.get('username'):
+            return jsonify({'error': 'Apenas o administrador Vinícius Cezar pode excluir outros administradores'}), 403
 
         # If the user is a configurador, inactivate the related Colaborador
         if user.tipo_acesso == 'configurador':
