@@ -286,6 +286,21 @@
 
             <!-- Estoque -->
             <section id="estoque" class="content-section">
+                <div class="filters">
+                    <div class="form-group">
+                        <label for="filtro-modelo">Modelo do Rastreador</label>
+                        <select id="filtro-modelo"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="filtro-operadora">Operadora</label>
+                        <select id="filtro-operadora"></select>
+                    </div>
+                    <button id="filtrar-estoque-btn" class="btn btn-secondary">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                    <div id="estoque-total" class="estoque-total"></div>
+                </div>
+
                 <div class="card">
                     <h3>Estoque Atual</h3>
                     <div class="table-container">

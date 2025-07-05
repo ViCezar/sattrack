@@ -780,3 +780,9 @@ table tr:hover td {
     margin-bottom: 0;
 }
 
+/* Total de estoque filtrado */
+.estoque-total {
+    margin-left: auto;
+    font-weight: bold;
+}
+

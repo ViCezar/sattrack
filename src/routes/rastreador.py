@@ -25,8 +25,8 @@ def require_admin():
     return None
 
 # Constantes para os novos campos
-MODELOS_RASTREADOR = ['ITR 150', 'ITR 120', 'TRX', 'Getrak']
-OPERADORAS = ['Tim', 'Claro', 'Vivo', '4 Operadores', '1NCE']
+MODELOS_RASTREADOR = ['ITR 120', 'ITR 155', 'TRX', 'Getrak']
+OPERADORAS = ['Tim', 'Claro', 'Vivo', '4 Operadora', '1NCE']
 
 @rastreador_bp.route('/dashboard', methods=['GET'])
 def get_dashboard():
@@ -285,10 +285,26 @@ def get_estoque():
     auth_error = require_auth()
     if auth_error:
         return auth_error
-    
+
     try:
-        estoque = Estoque.query.filter(Estoque.quantidade_estoque > 0).all()
-        return jsonify([item.to_dict() for item in estoque]), 200
+        modelo = request.args.get('modelo', 'Todos')
+        operadora = request.args.get('operadora', 'Todos')
+
+        query = Estoque.query
+
+        if modelo and modelo != 'Todos':
+            query = query.filter_by(modelo_rastreador=modelo)
+
+        if operadora and operadora != 'Todos':
+            query = query.filter_by(operadora=operadora)
+
+        estoque = query.all()
+        total = sum(item.quantidade_estoque for item in estoque)
+
+        return jsonify({
+            'estoque': [item.to_dict() for item in estoque],
+            'total': total
+        }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

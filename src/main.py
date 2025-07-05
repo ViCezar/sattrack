@@ -7,7 +7,11 @@ from flask import Flask, send_from_directory
 from flask_cors import CORS
 from src.models.user import db, User
 from src.models.rastreador import Colaborador
-from src.routes.rastreador import rastreador_bp
+from src.routes.rastreador import (
+    rastreador_bp,
+    MODELOS_RASTREADOR,
+    OPERADORAS
+)
 from src.routes.auth import auth_bp
 
 def create_app():
@@ -61,6 +65,25 @@ def create_app():
             print("Usuários padrão criados:")
             print("Admin: admin / admin123")
             print("Configuradores: giovany, vitor, miguel / 123456")
+
+        # Criar combinações de estoque padrão
+        from src.models.rastreador import Estoque
+        for modelo in MODELOS_RASTREADOR:
+            for operadora in OPERADORAS:
+                existente = Estoque.query.filter_by(
+                    modelo_rastreador=modelo,
+                    operadora=operadora
+                ).first()
+                if not existente:
+                    db.session.add(
+                        Estoque(
+                            modelo_rastreador=modelo,
+                            operadora=operadora,
+                            quantidade_estoque=0
+                        )
+                    )
+
+        db.session.commit()
     
     return app
 
