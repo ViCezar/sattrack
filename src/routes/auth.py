@@ -129,10 +129,17 @@ def delete_user(user_id):
     
     try:
         user = User.query.get_or_404(user_id)
-        user.ativo = False
+
+        # If the user is a configurador, inactivate the related Colaborador
+        if user.tipo_acesso == 'configurador':
+            colaborador = Colaborador.query.filter_by(nome=user.username).first()
+            if colaborador:
+                colaborador.ativo = False
+
+        db.session.delete(user)
         db.session.commit()
-        
-        return jsonify({'message': 'Usuário desativado com sucesso'}), 200
+
+        return jsonify({'message': 'Usuário excluído com sucesso'}), 200
         
     except Exception as e:
         db.session.rollback()
