@@ -46,8 +46,11 @@ def get_dashboard():
             Movimentacao.data <= hoje
         ).count()
         
-        # Colaboradores ativos
-        colaboradores_ativos = Colaborador.query.filter_by(ativo=True).count()
+        # Total de rastreadores configurados no mês
+        rastreadores_configurados = db.session.query(func.sum(ConfiguracaoDiaria.quantidade)).filter(
+            ConfiguracaoDiaria.data >= primeiro_dia_mes,
+            ConfiguracaoDiaria.data <= hoje
+        ).scalar() or 0
         
         # Últimas movimentações
         ultimas_movimentacoes = Movimentacao.query.order_by(
@@ -57,7 +60,7 @@ def get_dashboard():
         return jsonify({
             'total_estoque': total_estoque,
             'movimentacoes_mes': movimentacoes_mes,
-            'colaboradores_ativos': colaboradores_ativos,
+            'rastreadores_configurados': rastreadores_configurados,
             'ultimas_movimentacoes': [mov.to_dict() for mov in ultimas_movimentacoes]
         }), 200
         
