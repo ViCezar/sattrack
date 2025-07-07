@@ -5,6 +5,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from flask import Flask, send_from_directory
 from flask_cors import CORS
+from sqlalchemy import inspect, text
 from src.models.user import db, User
 from src.models.rastreador import Colaborador
 from src.routes.rastreador import (
@@ -51,6 +52,12 @@ def create_app():
     # Criar tabelas e dados iniciais
     with app.app_context():
         db.create_all()
+        inspector = inspect(db.engine)
+        if "users" in inspector.get_table_names():
+            columns = [c["name"] for c in inspector.get_columns("users")]
+            if "is_superadmin" not in columns:
+                db.session.execute(text("ALTER TABLE users ADD COLUMN is_superadmin BOOLEAN DEFAULT 0"))
+                db.session.commit()
         
         # Criar usuário administrador padrão se não existir
         admin = User.query.filter_by(username='admin').first()
