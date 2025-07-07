@@ -47,11 +47,6 @@ Abra seu navegador e acesse `http://localhost:5000`
 
 ### Credenciais Padrão
 
-**Administrador Principal:**
-- Usuário: Vinícius Cezar
-- Senha: Sat@1655
-- Tipo: Administrador
-
 **Administrador Padrão:**
 - Usuário: admin
 - Senha: admin123

@@ -271,13 +271,6 @@ A containerização da aplicação utilizando Docker facilitaria deployment em a
 
 ---
 
-## Credenciais de Acesso Padrão
-
-**Administrador Principal:**
-- Usuário: Vinícius Cezar
-- Senha: Sat@1655
-- Tipo: Administrador
-
 **Administrador Padrão:**
 - Usuário: admin
 - Senha: admin123

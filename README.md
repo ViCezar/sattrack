@@ -36,10 +36,6 @@ rastreadores_app/
 
 ## Credenciais de Acesso
 
-**Administrador Principal:**
-- Usuário: Vinícius Cezar
-- Senha: Sat@1655
-
 ## Instalação Rápida
 
 Consulte o [Guia Rápido de Instalação](./GUIA_RAPIDO.md) para instruções detalhadas.
