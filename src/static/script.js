@@ -14,11 +14,13 @@ const contentSections = document.querySelectorAll('.content-section');
 const pageTitle = document.getElementById('page-title');
 const loadingOverlay = document.getElementById('loading-overlay');
 const toastContainer = document.getElementById('toast-container');
+const themeToggleBtn = document.getElementById('theme-toggle');
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
     checkAuthStatus();
     setupEventListeners();
+    applyTheme();
 });
 
 // Verificar status de autenticação
@@ -121,6 +123,9 @@ function setupEventListeners() {
             closeUserModal();
         }
     });
+
+    // Alternar tema
+    themeToggleBtn.addEventListener('click', toggleTheme);
 }
 
 // Handlers de autenticação
@@ -1154,4 +1159,18 @@ function showToast(message, type = 'success') {
 window.editUser = editUser;
 window.cancelMovimentacao = cancelMovimentacao;
 window.cancelConfiguracao = cancelConfiguracao;
+
+function applyTheme() {
+    const theme = localStorage.getItem('theme') || 'light';
+    document.body.classList.toggle('dark-mode', theme === 'dark');
+    if (themeToggleBtn) {
+        themeToggleBtn.innerHTML = theme === 'dark' ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    }
+}
+
+function toggleTheme() {
+    const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
+    localStorage.setItem('theme', newTheme);
+    applyTheme();
+}
 
