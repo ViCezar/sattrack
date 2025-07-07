@@ -628,7 +628,7 @@ async function loadUsuarios() {
 function createMovimentacaoRow(mov, includeActions = false) {
     const row = document.createElement('tr');
     const tipoBadge = mov.tipo === 'Entrada' ? 'badge-entrada' : 'badge-saida';
-    
+
     row.innerHTML = `
         <td>${mov.data}</td>
         <td>${mov.modelo_rastreador}</td>
@@ -638,7 +638,19 @@ function createMovimentacaoRow(mov, includeActions = false) {
         <td>${mov.solicitante}</td>
         <td>${mov.operador}</td>
     `;
-    
+
+    if (includeActions && currentUser && currentUser.username === 'Vinícius Cezar') {
+        row.innerHTML += `
+            <td>
+                <button class="btn btn-danger btn-small" onclick="cancelMovimentacao(${mov.id})">
+                    <i class="fas fa-times"></i>
+                </button>
+            </td>
+        `;
+    } else if (includeActions) {
+        row.innerHTML += '<td></td>';
+    }
+
     return row;
 }
 
@@ -1048,6 +1060,33 @@ function editUser(id) {
     });
 }
 
+async function cancelMovimentacao(id) {
+    if (!confirm('Deseja realmente cancelar esta movimentação?')) {
+        return;
+    }
+
+    try {
+        showLoading();
+        const response = await fetch(`${API_BASE}/movimentacoes/${id}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+            showToast('Movimentação cancelada com sucesso!', 'success');
+            loadMovimentacoes();
+            loadDashboard();
+        } else {
+            showToast(result.error || 'Erro ao cancelar movimentação', 'error');
+        }
+    } catch (error) {
+        showToast('Erro de conexão', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
 // Funções utilitárias
 function showLoading() {
     loadingOverlay.style.display = 'flex';
@@ -1080,4 +1119,5 @@ function showToast(message, type = 'success') {
 
 // Tornar funções globais para uso nos event handlers inline
 window.editUser = editUser;
+window.cancelMovimentacao = cancelMovimentacao;
 
