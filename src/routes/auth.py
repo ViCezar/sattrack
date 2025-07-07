@@ -108,7 +108,7 @@ def update_user(user_id):
             # Administradores comuns não podem inativar ou alterar outros administradores
             if ('ativo' in data and data['ativo'] is False) or (
                     'tipo_acesso' in data and data['tipo_acesso'] != 'administrador'):
-                return jsonify({'error': 'Apenas o administrador Vinícius Cezar pode inativar ou alterar outros administradores'}), 403
+                return jsonify({'error': 'Você não possui permissão para alterar outros administradores!'}), 403
         if 'tipo_acesso' in data:
             user.tipo_acesso = data['tipo_acesso']
         if 'ativo' in data:
