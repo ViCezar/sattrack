@@ -639,7 +639,7 @@ function createMovimentacaoRow(mov, includeActions = false) {
         <td>${mov.operador}</td>
     `;
 
-    if (includeActions && currentUser && currentUser.username === 'Vinícius Cezar') {
+    if (includeActions && currentUser && currentUser.is_superadmin) {
         row.innerHTML += `
             <td>
                 <button class="btn btn-danger btn-small" onclick="cancelMovimentacao(${mov.id})">
@@ -672,7 +672,7 @@ function createHistoricoDataDiv(historicoDia) {
     
     let tableRows = '';
     historicoDia.colaboradores.forEach(colaborador => {
-        const cancelBtn = (currentUser && currentUser.username === 'Vinícius Cezar') ?
+        const cancelBtn = (currentUser && currentUser.is_superadmin) ?
             `<button class="btn btn-danger btn-small" onclick="cancelConfiguracao(${colaborador.id})">
                 <i class="fas fa-times"></i>
             </button>` : '';

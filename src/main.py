@@ -27,7 +27,7 @@ def create_app():
 
     # Configurações
     db_path = os.path.join(app.instance_path, 'rastreadores.db')
-    app.config['SECRET_KEY'] = 'sua-chave-secreta-muito-segura-aqui'
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'changeme')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
@@ -55,13 +55,16 @@ def create_app():
         # Criar usuário administrador padrão se não existir
         admin = User.query.filter_by(username='admin').first()
         if not admin:
-            admin = User(username='admin', tipo_acesso='administrador')
+            admin = User(
+                username='admin',
+                tipo_acesso='administrador',
+                is_superadmin=True
+            )
             admin.set_password('admin123')
             db.session.add(admin)
-            
+
             db.session.commit()
-            print("Usuários padrão criados:")
-            print("Admin: admin / admin123")
+            print("Administrador inicial criado. Altere a senha imediatamente.")
 
 
         # Criar combinações de estoque padrão

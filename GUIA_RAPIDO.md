@@ -45,30 +45,18 @@ python src/main.py
 
 Abra seu navegador e acesse `http://localhost:5000`
 
-### Credenciais Padrão
+### Usuário Inicial
 
-**Administrador Principal:**
-- Usuário: Vinícius Cezar
-- Senha: Sat@1655
-- Tipo: Administrador
-
-**Administrador Padrão:**
-- Usuário: admin
-- Senha: admin123
-- Tipo: Administrador
-
+Na primeira execução um usuário administrador é criado automaticamente. Altere a senha logo após o login.
 
 
 ### Configuração para Produção
 
 Para ambientes de produção, recomenda-se:
 
-1. **Alterar a chave secreta:**
+1. **Definir a chave secreta:**
 
-Edite o arquivo `src/main.py` e altere a linha:
-```python
-app.config['SECRET_KEY'] = 'sua-chave-secreta-muito-segura-aqui'
-```
+Configure a variável de ambiente `SECRET_KEY` com um valor seguro antes de iniciar a aplicação. Em desenvolvimento um valor padrão é utilizado, mas em produção esta variável deve ser definida.
 
 2. **Configurar HTTPS:**
 

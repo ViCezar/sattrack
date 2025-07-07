@@ -271,18 +271,9 @@ A containerização da aplicação utilizando Docker facilitaria deployment em a
 
 ---
 
-## Credenciais de Acesso Padrão
+## Usuário Inicial
 
-**Administrador Principal:**
-- Usuário: Vinícius Cezar
-- Senha: Sat@1655
-- Tipo: Administrador
-
-**Administrador Padrão:**
-- Usuário: admin
-- Senha: admin123
-- Tipo: Administrador
-
+Um usuário administrador é criado automaticamente na primeira execução do sistema. Altere a senha padrão imediatamente após o login.
 
 
 ---
