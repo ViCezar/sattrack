@@ -412,12 +412,12 @@ async function loadMovimentacoes() {
     }
 }
 
-async function loadHistoricoMovimentacoes(mesAno = '') {
+async function loadHistoricoMovimentacoes(dataFiltro = '') {
     try {
         showLoading();
         let url = `${API_BASE}/historico-movimentacoes`;
-        if (mesAno) {
-            url += `?mesAno=${encodeURIComponent(mesAno)}`;
+        if (dataFiltro) {
+            url += `?data=${encodeURIComponent(dataFiltro)}`;
         }
 
         const response = await fetch(url, {
@@ -982,9 +982,9 @@ async function handleSalvarHistorico() {
 }
 
 function handleFiltrarHistorico() {
-    const mesAno = document.getElementById('filtro-mes').value;
-    if (mesAno) {
-        loadHistoricoMovimentacoes(mesAno);
+    const data = document.getElementById('filtro-data').value;
+    if (data) {
+        loadHistoricoMovimentacoes(data);
     } else {
         loadHistoricoMovimentacoes();
     }
