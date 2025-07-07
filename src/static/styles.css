@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     background-color: #f5f7fa;
     color: #333;
     line-height: 1.6;
@@ -21,7 +21,7 @@ body {
 /* Sidebar */
 .sidebar {
     width: 280px;
-    background: linear-gradient(135deg, #2d7d32 0%, #388e3c 100%);
+    background: linear-gradient(135deg, #1b5e20 0%, #2d7d32 33%, #388e3c 66%, #4caf50 100%);
     color: white;
     position: fixed;
     height: 100vh;
@@ -168,7 +168,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #2d7d32 0%, #388e3c 100%);
+    background: linear-gradient(135deg, #1b5e20 0%, #2d7d32 33%, #388e3c 66%, #4caf50 100%);
 }
 
 .login-card {
@@ -252,7 +252,7 @@ body {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    background: linear-gradient(135deg, #2d7d32 0%, #388e3c 100%);
+    background: linear-gradient(135deg, #1b5e20 0%, #2d7d32 33%, #388e3c 66%, #4caf50 100%);
     color: white;
     margin-bottom: 0;
 }
@@ -385,7 +385,7 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #2d7d32 0%, #388e3c 100%);
+    background: linear-gradient(135deg, #1b5e20 0%, #2d7d32 33%, #388e3c 66%, #4caf50 100%);
     color: white;
 }
 
@@ -484,7 +484,7 @@ table tr:hover td {
 }
 
 .historico-data-header {
-    background: linear-gradient(135deg, #2d7d32 0%, #388e3c 100%);
+    background: linear-gradient(135deg, #1b5e20 0%, #2d7d32 33%, #388e3c 66%, #4caf50 100%);
     color: white;
     padding: 1rem 1.5rem;
     font-weight: 600;
