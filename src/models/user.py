@@ -11,6 +11,7 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     tipo_acesso = db.Column(db.String(20), nullable=False, default='configurador')  # 'configurador' ou 'administrador'
+    is_superadmin = db.Column(db.Boolean, default=False)
     ativo = db.Column(db.Boolean, default=True)
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
     
@@ -25,6 +26,7 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'tipo_acesso': self.tipo_acesso,
+            'is_superadmin': self.is_superadmin,
             'ativo': self.ativo,
             'data_criacao': self.data_criacao.strftime('%d/%m/%Y %H:%M')
         }

@@ -168,8 +168,8 @@ def delete_movimentacao(mov_id):
     if admin_error:
         return admin_error
 
-    if session.get('username') != 'Vinícius Cezar':
-        return jsonify({'error': 'Apenas o administrador Vinícius Cezar pode cancelar movimentações'}), 403
+    if not session.get('is_superadmin'):
+        return jsonify({'error': 'Apenas superadministradores podem cancelar movimentações'}), 403
 
     try:
         mov = Movimentacao.query.get_or_404(mov_id)
@@ -272,8 +272,8 @@ def delete_configuracao(config_id):
     if admin_error:
         return admin_error
 
-    if session.get('username') != 'Vinícius Cezar':
-        return jsonify({'error': 'Apenas o administrador Vinícius Cezar pode cancelar configurações'}), 403
+    if not session.get('is_superadmin'):
+        return jsonify({'error': 'Apenas superadministradores podem cancelar configurações'}), 403
 
     try:
         config = ConfiguracaoDiaria.query.get_or_404(config_id)

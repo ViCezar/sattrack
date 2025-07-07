@@ -34,11 +34,9 @@ rastreadores_app/
 - Sistema de autenticação com dois níveis de acesso (Administrador e Configurador)
 - Interface responsiva com design moderno em tons de verde
 
-## Credenciais de Acesso
+## Usuário Inicial
 
-**Administrador Principal:**
-- Usuário: Vinícius Cezar
-- Senha: Sat@1655
+Na primeira execução do sistema é criado automaticamente um usuário com perfil de administrador. A senha padrão deve ser alterada imediatamente após o primeiro acesso.
 
 ## Instalação Rápida
 

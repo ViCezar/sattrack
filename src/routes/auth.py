@@ -20,6 +20,7 @@ def login():
             session['user_id'] = user.id
             session['username'] = user.username
             session['tipo_acesso'] = user.tipo_acesso
+            session['is_superadmin'] = user.is_superadmin
             
             return jsonify({
                 'message': 'Login realizado com sucesso',
@@ -104,7 +105,7 @@ def update_user(user_id):
 
         if 'username' in data:
             user.username = data['username']
-        if user.tipo_acesso == 'administrador' and session.get('username') != 'Vinícius Cezar' and user.username != session.get('username'):
+        if user.tipo_acesso == 'administrador' and not session.get('is_superadmin') and user.id != session.get('user_id'):
             # Administradores comuns não podem inativar ou alterar outros administradores
             if ('ativo' in data and data['ativo'] is False) or (
                     'tipo_acesso' in data and data['tipo_acesso'] != 'administrador'):
@@ -136,7 +137,7 @@ def delete_user(user_id):
         user = User.query.get_or_404(user_id)
 
         # Administradores comuns não podem excluir outros administradores
-        if user.tipo_acesso == 'administrador' and session.get('username') != 'Vinícius Cezar' and user.username != session.get('username'):
+        if user.tipo_acesso == 'administrador' and not session.get('is_superadmin') and user.id != session.get('user_id'):
             return jsonify({'error': 'Você não possui permissão para excluir outros administradores!'}), 403
 
         # If the user is a configurador, inactivate the related Colaborador
