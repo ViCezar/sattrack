@@ -665,13 +665,13 @@ function createHistoricoRow(mov) {
 
     row.innerHTML = `
         <td>${mov.data}</td>
-        <td>${mov.hora_backup}</td>
         <td>${mov.modelo_rastreador}</td>
         <td>${mov.operadora}</td>
         <td>${mov.quantidade}</td>
         <td><span class="badge ${tipoBadge}">${mov.tipo}</span></td>
         <td>${mov.solicitante}</td>
         <td>${mov.operador}</td>
+        <td>${mov.hora_backup}</td>
     `;
 
     return row;
