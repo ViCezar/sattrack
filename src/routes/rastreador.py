@@ -374,9 +374,13 @@ def get_historico_movimentacoes():
         return admin_error
 
     try:
+        data_str = request.args.get('data')
         mes_ano = request.args.get('mesAno')
         query = HistoricoMovimentacao.query
-        if mes_ano:
+        if data_str:
+            filtro_data = datetime.strptime(data_str, '%Y-%m-%d').date()
+            query = query.filter_by(data=filtro_data)
+        elif mes_ano:
             query = query.filter_by(mes_ano=mes_ano)
 
         historico = query.order_by(desc(HistoricoMovimentacao.data)).all()
