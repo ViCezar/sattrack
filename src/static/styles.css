@@ -510,7 +510,7 @@ table tr:hover td {
 
 /* Alinha o botão de exclusão do histórico à direita */
 .historico-data .table-actions {
-    justify-content: flex-end;
+    justify-content: flex-start;
 }
 
 /* Loading */
