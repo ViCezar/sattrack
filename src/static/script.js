@@ -75,6 +75,7 @@ function showMainApp() {
     // Carregar opções e dados iniciais
     loadOpcoes();
     loadDashboard();
+    loadColaboradores();
 }
 
 // Configurar event listeners
@@ -807,9 +808,12 @@ async function handleMovimentacaoSubmit(e) {
         // Desmarcar todos os checkboxes
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
         
-        // Recarregar dados se estiver na seção de movimentações
+        // Recarregar dados se estiver na seção de movimentações ou histórico
         if (currentSection === 'movimentacoes') {
             loadMovimentacoes();
+        }
+        if (currentSection === 'historico-movimentacoes') {
+            loadHistoricoMovimentacoes();
         }
     } catch (error) {
         showToast('Erro de conexão', 'error');
