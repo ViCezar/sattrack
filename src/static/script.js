@@ -672,11 +672,15 @@ function createHistoricoDataDiv(historicoDia) {
     
     let tableRows = '';
     historicoDia.colaboradores.forEach(colaborador => {
+        const cancelBtn = (currentUser && currentUser.username === 'Vinícius Cezar') ?
+            `<button class="btn btn-danger btn-small" onclick="cancelConfiguracao(${colaborador.id})">
+                <i class="fas fa-times"></i>
+            </button>` : '';
         tableRows += `
             <tr>
                 <td>${colaborador.nome_colaborador}</td>
                 <td>${colaborador.quantidade_dia}</td>
-                <td>${colaborador.quantidade_total_mes}</td>
+                <td>${colaborador.quantidade_total_mes} ${cancelBtn}</td>
             </tr>
         `;
     });
@@ -1087,6 +1091,33 @@ async function cancelMovimentacao(id) {
     }
 }
 
+async function cancelConfiguracao(id) {
+    if (!confirm('Deseja realmente cancelar esta configuração?')) {
+        return;
+    }
+
+    try {
+        showLoading();
+        const response = await fetch(`${API_BASE}/configuracao/${id}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
+        const result = await response.json();
+
+        if (response.ok) {
+            showToast('Configuração cancelada com sucesso!', 'success');
+            loadHistoricoConfig();
+            loadColaboradores();
+        } else {
+            showToast(result.error || 'Erro ao cancelar configuração', 'error');
+        }
+    } catch (error) {
+        showToast('Erro de conexão', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
 // Funções utilitárias
 function showLoading() {
     loadingOverlay.style.display = 'flex';
@@ -1120,4 +1151,5 @@ function showToast(message, type = 'success') {
 // Tornar funções globais para uso nos event handlers inline
 window.editUser = editUser;
 window.cancelMovimentacao = cancelMovimentacao;
+window.cancelConfiguracao = cancelConfiguracao;
 

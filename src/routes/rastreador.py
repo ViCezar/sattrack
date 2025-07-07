@@ -258,9 +258,38 @@ def registrar_configuracao():
             db.session.add(config)
         
         db.session.commit()
-        
+
         return jsonify({'message': 'Configuração registrada com sucesso'}), 201
         
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@rastreador_bp.route('/configuracao/<int:config_id>', methods=['DELETE'])
+def delete_configuracao(config_id):
+    """Cancela uma configuração diária existente"""
+    admin_error = require_admin()
+    if admin_error:
+        return admin_error
+
+    if session.get('username') != 'Vinícius Cezar':
+        return jsonify({'error': 'Apenas o administrador Vinícius Cezar pode cancelar configurações'}), 403
+
+    try:
+        config = ConfiguracaoDiaria.query.get_or_404(config_id)
+
+        historico = HistoricoConfig.query.filter_by(
+            data=config.data,
+            nome_colaborador=config.colaborador.nome,
+            quantidade_dia_atual=config.quantidade
+        ).order_by(desc(HistoricoConfig.id)).first()
+        if historico:
+            db.session.delete(historico)
+
+        db.session.delete(config)
+        db.session.commit()
+
+        return jsonify({'message': 'Configuração cancelada com sucesso'}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
@@ -286,6 +315,7 @@ def get_historico_config():
         for config in configuracoes:
             data_str = config.data.strftime('%d/%m/%Y')
             historico_por_data[data_str].append({
+                'id': config.id,
                 'nome_colaborador': config.colaborador.nome,
                 'quantidade_dia': config.quantidade,
                 'quantidade_total_mes': config.colaborador.get_quantidade_total_mes()
