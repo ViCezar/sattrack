@@ -15,11 +15,20 @@ from src.routes.rastreador import (
 from src.routes.auth import auth_bp
 
 def create_app():
-    app = Flask(__name__, static_folder='static', static_url_path='')
-    
+    app = Flask(
+        __name__,
+        static_folder='static',
+        static_url_path='',
+        instance_relative_config=True,
+    )
+
+    # Certificar-se de que a pasta instance existe
+    os.makedirs(app.instance_path, exist_ok=True)
+
     # Configurações
+    db_path = os.path.join(app.instance_path, 'rastreadores.db')
     app.config['SECRET_KEY'] = 'sua-chave-secreta-muito-segura-aqui'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///rastreadores.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Inicializar extensões
