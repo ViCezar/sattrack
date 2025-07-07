@@ -114,8 +114,21 @@ def registrar_movimentacao():
             solicitante=data['solicitante'],
             operador=session['username']  # Preencher automaticamente com o usuário logado
         )
-        
+
         db.session.add(movimentacao)
+
+        # Salvar também no histórico imediato
+        historico = HistoricoMovimentacao(
+            data=data_movimentacao,
+            modelo_rastreador=data['modelo_rastreador'],
+            operadora=data['operadora'],
+            quantidade=int(data['quantidade']),
+            tipo=data['tipo'],
+            solicitante=data['solicitante'],
+            operador=session['username'],
+            mes_ano=data_movimentacao.strftime('%m/%Y')
+        )
+        db.session.add(historico)
         
         # Atualizar estoque
         estoque = Estoque.query.filter_by(
@@ -352,4 +365,52 @@ def get_opcoes():
         'modelos': MODELOS_RASTREADOR,
         'operadoras': OPERADORAS
     }), 200
+
+
+@rastreador_bp.route('/historico-movimentacoes', methods=['GET'])
+def get_historico_movimentacoes():
+    admin_error = require_admin()
+    if admin_error:
+        return admin_error
+
+    try:
+        mes_ano = request.args.get('mesAno')
+        query = HistoricoMovimentacao.query
+        if mes_ano:
+            query = query.filter_by(mes_ano=mes_ano)
+
+        historico = query.order_by(desc(HistoricoMovimentacao.data)).all()
+        return jsonify([mov.to_dict() for mov in historico]), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@rastreador_bp.route('/historico-movimentacoes/backup-reset', methods=['POST'])
+def backup_reset_movimentacoes():
+    admin_error = require_admin()
+    if admin_error:
+        return admin_error
+
+    try:
+        movimentacoes = Movimentacao.query.all()
+        for mov in movimentacoes:
+            historico = HistoricoMovimentacao(
+                data=mov.data,
+                modelo_rastreador=mov.modelo_rastreador,
+                operadora=mov.operadora,
+                quantidade=mov.quantidade,
+                tipo=mov.tipo,
+                solicitante=mov.solicitante,
+                operador=mov.operador,
+                mes_ano=mov.data.strftime('%m/%Y')
+            )
+            db.session.add(historico)
+            db.session.delete(mov)
+
+        db.session.commit()
+
+        return jsonify({'message': 'Backup de movimentações realizado com sucesso'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 

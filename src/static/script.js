@@ -411,6 +411,41 @@ async function loadMovimentacoes() {
     }
 }
 
+async function loadHistoricoMovimentacoes(mesAno = '') {
+    try {
+        showLoading();
+        let url = `${API_BASE}/historico-movimentacoes`;
+        if (mesAno) {
+            url += `?mesAno=${encodeURIComponent(mesAno)}`;
+        }
+
+        const response = await fetch(url, {
+            credentials: 'include'
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            const tbody = document.querySelector('#historico-movimentacoes-table tbody');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-archive"></i><br>Nenhuma movimentação encontrada</td></tr>';
+            } else {
+                data.forEach(mov => {
+                    const row = createMovimentacaoRow(mov);
+                    tbody.appendChild(row);
+                });
+            }
+        } else {
+            showToast(data.error || 'Erro ao carregar histórico', 'error');
+        }
+    } catch (error) {
+        showToast('Erro de conexão', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
 async function loadColaboradores() {
     try {
         showLoading();
