@@ -680,7 +680,8 @@ function createHistoricoDataDiv(historicoDia) {
             <tr>
                 <td>${colaborador.nome_colaborador}</td>
                 <td>${colaborador.quantidade_dia}</td>
-                <td>${colaborador.quantidade_total_mes} ${cancelBtn}</td>
+                <td>${colaborador.quantidade_total_mes}</td>
+                <td><div class="table-actions">${cancelBtn}</div></td>
             </tr>
         `;
     });
@@ -696,6 +697,7 @@ function createHistoricoDataDiv(historicoDia) {
                         <th>Operador</th>
                         <th>Quantidade do Dia</th>
                         <th>Total do Mês</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>

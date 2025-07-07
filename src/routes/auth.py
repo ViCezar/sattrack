@@ -137,7 +137,7 @@ def delete_user(user_id):
 
         # Administradores comuns não podem excluir outros administradores
         if user.tipo_acesso == 'administrador' and session.get('username') != 'Vinícius Cezar' and user.username != session.get('username'):
-            return jsonify({'error': 'Apenas o administrador Vinícius Cezar pode excluir outros administradores'}), 403
+            return jsonify({'error': 'Você não possui permissão para excluir outros administradores!'}), 403
 
         # If the user is a configurador, inactivate the related Colaborador
         if user.tipo_acesso == 'configurador':

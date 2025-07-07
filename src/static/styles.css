@@ -508,6 +508,11 @@ table tr:hover td {
     flex-wrap: wrap;
 }
 
+/* Alinha o botão de exclusão do histórico à direita */
+.historico-data .table-actions {
+    justify-content: flex-end;
+}
+
 /* Loading */
 .loading-overlay {
     position: fixed;
