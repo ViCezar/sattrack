@@ -33,6 +33,7 @@ rastreadores_app/
 - Gestão de estoque com filtros por modelo e operadora
 - Sistema de autenticação com dois níveis de acesso (Administrador e Configurador)
 - Interface responsiva com design moderno em tons de verde
+- Opção de modo escuro acessível no cabeçalho
 
 ## Credenciais de Acesso
 
