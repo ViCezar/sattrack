@@ -435,10 +435,10 @@ async function loadHistoricoMovimentacoes(dataFiltro = '') {
             tbody.innerHTML = '';
 
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><i class="fas fa-archive"></i><br>Nenhuma movimentação encontrada</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state"><i class="fas fa-archive"></i><br>Nenhuma movimentação encontrada</td></tr>';
             } else {
                 data.forEach(mov => {
-                    const row = createMovimentacaoRow(mov);
+                    const row = createHistoricoRow(mov);
                     tbody.appendChild(row);
                 });
             }
@@ -655,6 +655,24 @@ function createMovimentacaoRow(mov, includeActions = false) {
     } else if (includeActions) {
         row.innerHTML += '<td></td>';
     }
+
+    return row;
+}
+
+function createHistoricoRow(mov) {
+    const row = document.createElement('tr');
+    const tipoBadge = mov.tipo === 'Entrada' ? 'badge-entrada' : 'badge-saida';
+
+    row.innerHTML = `
+        <td>${mov.data}</td>
+        <td>${mov.hora_backup}</td>
+        <td>${mov.modelo_rastreador}</td>
+        <td>${mov.operadora}</td>
+        <td>${mov.quantidade}</td>
+        <td><span class="badge ${tipoBadge}">${mov.tipo}</span></td>
+        <td>${mov.solicitante}</td>
+        <td>${mov.operador}</td>
+    `;
 
     return row;
 }

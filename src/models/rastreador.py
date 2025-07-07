@@ -41,11 +41,12 @@ class HistoricoMovimentacao(db.Model):
     operador = db.Column(db.String(100), nullable=False)
     mes_ano = db.Column(db.String(7), nullable=False)  # formato MM/YYYY
     data_backup = db.Column(db.DateTime, default=datetime.utcnow)
-    
+
     def to_dict(self):
         return {
             'id': self.id,
             'data': self.data.strftime('%d/%m/%Y'),
+            'hora_backup': self.data_backup.strftime('%H:%M'),
             'modelo_rastreador': self.modelo_rastreador,
             'operadora': self.operadora,
             'quantidade': self.quantidade,
