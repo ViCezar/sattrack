@@ -154,9 +154,55 @@ def registrar_movimentacao():
         estoque.data_ultima_alteracao = datetime.utcnow()
         
         db.session.commit()
-        
+
         return jsonify({'message': 'Movimentação registrada com sucesso'}), 201
-        
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+@rastreador_bp.route('/movimentacoes/<int:mov_id>', methods=['DELETE'])
+def delete_movimentacao(mov_id):
+    admin_error = require_admin()
+    if admin_error:
+        return admin_error
+
+    if session.get('username') != 'Vinícius Cezar':
+        return jsonify({'error': 'Apenas o administrador Vinícius Cezar pode cancelar movimentações'}), 403
+
+    try:
+        mov = Movimentacao.query.get_or_404(mov_id)
+
+        estoque = Estoque.query.filter_by(
+            modelo_rastreador=mov.modelo_rastreador,
+            operadora=mov.operadora
+        ).first()
+        if estoque:
+            if mov.tipo == 'Entrada':
+                estoque.quantidade_estoque -= mov.quantidade
+            else:
+                estoque.quantidade_estoque += mov.quantidade
+            if estoque.quantidade_estoque < 0:
+                estoque.quantidade_estoque = 0
+            estoque.data_ultima_alteracao = datetime.utcnow()
+
+        historico = HistoricoMovimentacao.query.filter_by(
+            data=mov.data,
+            modelo_rastreador=mov.modelo_rastreador,
+            operadora=mov.operadora,
+            quantidade=mov.quantidade,
+            tipo=mov.tipo,
+            solicitante=mov.solicitante,
+            operador=mov.operador
+        ).order_by(desc(HistoricoMovimentacao.id)).first()
+        if historico:
+            db.session.delete(historico)
+
+        db.session.delete(mov)
+        db.session.commit()
+
+        return jsonify({'message': 'Movimentação cancelada com sucesso'}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
