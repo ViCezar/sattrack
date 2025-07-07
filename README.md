@@ -58,7 +58,5 @@ python src/main.py
 
 Todos os direitos reservados.
 
----
 
-*Desenvolvido por Manus AI - 03 de Julho de 2025*
 

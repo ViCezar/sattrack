@@ -282,7 +282,5 @@ A containerização da aplicação utilizando Docker facilitaria deployment em a
 
 **Nota de Segurança:** Todas as senhas padrão devem ser alteradas imediatamente após a instalação em ambiente de produção.
 
----
 
-*Documentação gerada por Manus AI - Versão 1.0 - 03 de Julho de 2025*
 
