@@ -568,10 +568,17 @@ async function loadResumoEstoque(filtro = 'modelo') {
             if (data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="2" class="empty-state"><i class="fas fa-chart-bar"></i><br>Nenhum dado encontrado</td></tr>';
             } else {
+                let totalGeral = 0;
                 data.forEach(item => {
                     const row = createResumoRow(item, filtro);
                     tbody.appendChild(row);
+                    totalGeral += item.total;
                 });
+
+                const totalRow = document.createElement('tr');
+                totalRow.classList.add('total-row');
+                totalRow.innerHTML = `<td>Total Geral</td><td>${totalGeral}</td>`;
+                tbody.appendChild(totalRow);
             }
         } else {
             showToast(data.error || 'Erro ao carregar resumo', 'error');
