@@ -509,10 +509,16 @@ async function loadColaboradores() {
     }
 }
 
-async function loadHistoricoConfig() {
+async function loadHistoricoConfig(operador = '', dia = '') {
     try {
         showLoading();
-        const response = await fetch(`${API_BASE}/historico-config`, {
+        let url = `${API_BASE}/historico-config`;
+        const params = [];
+        if (operador) params.push(`operador=${encodeURIComponent(operador)}`);
+        if (dia) params.push(`data=${encodeURIComponent(dia)}`);
+        if (params.length > 0) url += `?${params.join('&')}`;
+
+        const response = await fetch(url, {
             credentials: 'include'
         });
         const data = await response.json();
@@ -1114,10 +1120,14 @@ function handleFiltrarEstoque() {
 function handleFiltrarConfig() {
     const operador = document.getElementById('filtro-operador').value;
     const dia = document.getElementById('filtro-dia').value;
+    loadHistoricoConfig(operador, dia);
+
     if (operador && dia) {
         loadResumoConfig(operador, null, dia);
     } else if (operador) {
         loadResumoConfig(operador);
+    } else {
+        document.getElementById('historico-config-resumo').textContent = '';
     }
 }
 
