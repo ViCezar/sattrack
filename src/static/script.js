@@ -604,6 +604,11 @@ async function loadEstoque(modelo = 'Todos', operadora = 'Todos') {
                 });
             }
 
+            const totalRow = document.createElement('tr');
+                totalRow.classList.add('total-row');
+                totalRow.innerHTML = `<td colspan="2">Total Geral</td><td>${data.total}</td><td></td>`;
+                tbody.appendChild(totalRow);
+
             const totalDiv = document.getElementById('estoque-total');
             totalDiv.textContent = `Total: ${data.total}`;
         } else {
