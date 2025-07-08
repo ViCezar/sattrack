@@ -299,16 +299,29 @@ def get_historico_config():
     auth_error = require_auth()
     if auth_error:
         return auth_error
-    
+
     try:
         # Buscar configurações diárias do mês atual
         hoje = date.today()
         primeiro_dia_mes = hoje.replace(day=1)
-        
-        configuracoes = ConfiguracaoDiaria.query.filter(
+
+        # Filtros opcionais
+        operador = request.args.get('operador')
+        data_str = request.args.get('data')
+
+        query = ConfiguracaoDiaria.query.filter(
             ConfiguracaoDiaria.data >= primeiro_dia_mes,
             ConfiguracaoDiaria.data <= hoje
-        ).order_by(desc(ConfiguracaoDiaria.data)).all()
+        )
+
+        if operador:
+            query = query.join(Colaborador).filter(Colaborador.nome == operador)
+
+        if data_str:
+            filtro_data = datetime.strptime(data_str, '%Y-%m-%d').date()
+            query = query.filter(ConfiguracaoDiaria.data == filtro_data)
+
+        configuracoes = query.order_by(desc(ConfiguracaoDiaria.data)).all()
         
         # Organizar por data
         historico_por_data = defaultdict(list)
