@@ -106,6 +106,7 @@ function setupEventListeners() {
     // Botões de ação
     document.getElementById('backup-reset-btn').addEventListener('click', handleBackupReset);
     document.getElementById('salvar-historico-btn').addEventListener('click', handleSalvarHistorico);
+    document.getElementById('filtrar-config-btn').addEventListener('click', handleFiltrarConfig);
     document.getElementById('filtrar-historico-btn').addEventListener('click', handleFiltrarHistorico);
     document.getElementById('filtrar-resumo-btn').addEventListener('click', handleFiltrarResumo);
     document.getElementById('filtrar-estoque-btn').addEventListener('click', handleFiltrarEstoque);
@@ -253,6 +254,31 @@ function populateEstoqueFilters() {
     });
 }
 
+// Preencher select de operador para o histórico de configuração
+async function populateOperadorFilter() {
+    const operadorSelect = document.getElementById('filtro-operador');
+    if (!operadorSelect) return;
+
+    try {
+        const response = await fetch(`${API_BASE}/colaboradores`, {
+            credentials: 'include'
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            operadorSelect.innerHTML = '<option value="">Todos</option>';
+            data.forEach(op => {
+                const opt = document.createElement('option');
+                opt.value = op.nome;
+                opt.textContent = op.nome;
+                operadorSelect.appendChild(opt);
+            });
+        }
+    } catch (error) {
+        console.error('Erro ao carregar operadores', error);
+    }
+}
+
 // Inicializar formulário
 function initializeForm() {
     // Definir data atual
@@ -331,6 +357,7 @@ function loadSectionData(section) {
             loadColaboradores();
             break;
         case 'historico-config':
+            populateOperadorFilter();
             loadHistoricoConfig();
             break;
         case 'estoque':
@@ -504,6 +531,28 @@ async function loadHistoricoConfig() {
             }
         } else {
             showToast(data.error || 'Erro ao carregar histórico de configuração', 'error');
+        }
+    } catch (error) {
+        showToast('Erro de conexão', 'error');
+    } finally {
+        hideLoading();
+    }
+}
+
+async function loadResumoConfig(operador, mesAno) {
+    try {
+        showLoading();
+        const url = `${API_BASE}/historico-config/resumo?operador=${encodeURIComponent(operador)}&mesAno=${encodeURIComponent(mesAno)}`;
+        const response = await fetch(url, { credentials: 'include' });
+        const data = await response.json();
+
+        if (response.ok) {
+            const resumoDiv = document.getElementById('historico-config-resumo');
+            const [mes, ano] = mesAno.split('/');
+            const mesNome = new Date(`${ano}-${mes}-01`).toLocaleDateString('pt-BR', { month: 'long' });
+            resumoDiv.textContent = `No mês de ${mesNome.charAt(0).toUpperCase() + mesNome.slice(1)} o Operador ${operador}, configurou ${data.total} rastreadores`;
+        } else {
+            showToast(data.error || 'Erro ao carregar resumo', 'error');
         }
     } catch (error) {
         showToast('Erro de conexão', 'error');
@@ -1047,6 +1096,16 @@ function handleFiltrarEstoque() {
     const modelo = document.getElementById('filtro-modelo').value;
     const operadora = document.getElementById('filtro-operadora').value;
     loadEstoque(modelo, operadora);
+}
+
+function handleFiltrarConfig() {
+    const operador = document.getElementById('filtro-operador').value;
+    const mes = document.getElementById('filtro-mes').value;
+    if (operador && mes) {
+        const [ano, mesNum] = mes.split('-');
+        const mesAno = `${mesNum}/${ano}`;
+        loadResumoConfig(operador, mesAno);
+    }
 }
 
 // Funções do modal de usuário

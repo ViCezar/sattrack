@@ -372,6 +372,33 @@ def salvar_historico_diario():
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
+@rastreador_bp.route('/historico-config/resumo', methods=['GET'])
+def resumo_historico_config():
+    """Retorna o total configurado por operador em um determinado mês"""
+    auth_error = require_auth()
+    if auth_error:
+        return auth_error
+
+    try:
+        operador = request.args.get('operador')
+        mes_ano = request.args.get('mesAno')
+
+        query = HistoricoConfig.query
+        if operador:
+            query = query.filter_by(nome_colaborador=operador)
+        if mes_ano:
+            query = query.filter_by(mes_ano=mes_ano)
+
+        total = query.with_entities(func.sum(HistoricoConfig.quantidade_dia_atual)).scalar() or 0
+
+        return jsonify({
+            'operador': operador,
+            'mesAno': mes_ano,
+            'total': int(total)
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @rastreador_bp.route('/estoque', methods=['GET'])
 def get_estoque():
     auth_error = require_auth()
