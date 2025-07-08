@@ -1113,14 +1113,11 @@ function handleFiltrarEstoque() {
 
 function handleFiltrarConfig() {
     const operador = document.getElementById('filtro-operador').value;
-    const mes = document.getElementById('filtro-mes').value;
     const dia = document.getElementById('filtro-dia').value;
     if (operador && dia) {
         loadResumoConfig(operador, null, dia);
-    } else if (operador && mes) {
-        const [ano, mesNum] = mes.split('-');
-        const mesAno = `${mesNum}/${ano}`;
-        loadResumoConfig(operador, mesAno);
+    } else if (operador) {
+        loadResumoConfig(operador);
     }
 }
 
