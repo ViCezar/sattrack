@@ -374,7 +374,7 @@ def salvar_historico_diario():
 
 @rastreador_bp.route('/historico-config/resumo', methods=['GET'])
 def resumo_historico_config():
-    """Retorna o total configurado por operador em um determinado mês"""
+    """Retorna o total configurado por operador em determinado período"""
     auth_error = require_auth()
     if auth_error:
         return auth_error
@@ -382,11 +382,16 @@ def resumo_historico_config():
     try:
         operador = request.args.get('operador')
         mes_ano = request.args.get('mesAno')
+        data_str = request.args.get('data')
 
         query = HistoricoConfig.query
         if operador:
             query = query.filter_by(nome_colaborador=operador)
-        if mes_ano:
+
+        if data_str:
+            filtro_data = datetime.strptime(data_str, '%Y-%m-%d').date()
+            query = query.filter_by(data=filtro_data)
+        elif mes_ano:
             query = query.filter_by(mes_ano=mes_ano)
 
         total = query.with_entities(func.sum(HistoricoConfig.quantidade_dia_atual)).scalar() or 0
@@ -394,6 +399,7 @@ def resumo_historico_config():
         return jsonify({
             'operador': operador,
             'mesAno': mes_ano,
+            'data': data_str,
             'total': int(total)
         }), 200
     except Exception as e:
