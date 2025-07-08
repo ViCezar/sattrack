@@ -560,7 +560,10 @@ async function loadResumoConfig(operador, mesAno = null, dia = null) {
 
         if (response.ok) {
             const resumoDiv = document.getElementById('historico-config-resumo');
-            if (dia) {
+
+            if (data.total === 0) {
+                resumoDiv.textContent = '';
+            } else if (dia) {
                 const [ano, mes, diaNum] = dia.split('-');
                 resumoDiv.textContent = `No dia ${diaNum}/${mes}/${ano} o Operador ${operador}, configurou ${data.total} rastreadores`;
             } else if (mesAno) {
