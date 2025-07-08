@@ -539,18 +539,31 @@ async function loadHistoricoConfig() {
     }
 }
 
-async function loadResumoConfig(operador, mesAno) {
+async function loadResumoConfig(operador, mesAno = null, dia = null) {
     try {
         showLoading();
-        const url = `${API_BASE}/historico-config/resumo?operador=${encodeURIComponent(operador)}&mesAno=${encodeURIComponent(mesAno)}`;
+        let url = `${API_BASE}/historico-config/resumo?operador=${encodeURIComponent(operador)}`;
+        if (mesAno) {
+            url += `&mesAno=${encodeURIComponent(mesAno)}`;
+        }
+        if (dia) {
+            url += `&data=${encodeURIComponent(dia)}`;
+        }
         const response = await fetch(url, { credentials: 'include' });
         const data = await response.json();
 
         if (response.ok) {
             const resumoDiv = document.getElementById('historico-config-resumo');
-            const [mes, ano] = mesAno.split('/');
-            const mesNome = new Date(`${ano}-${mes}-01`).toLocaleDateString('pt-BR', { month: 'long' });
-            resumoDiv.textContent = `No mês de ${mesNome.charAt(0).toUpperCase() + mesNome.slice(1)} o Operador ${operador}, configurou ${data.total} rastreadores`;
+            if (dia) {
+                const [ano, mes, diaNum] = dia.split('-');
+                resumoDiv.textContent = `No dia ${diaNum}/${mes}/${ano} o Operador ${operador}, configurou ${data.total} rastreadores`;
+            } else if (mesAno) {
+                const [mes, ano] = mesAno.split('/');
+                const mesNome = new Date(`${ano}-${mes}-01`).toLocaleDateString('pt-BR', { month: 'long' });
+                resumoDiv.textContent = `No mês de ${mesNome.charAt(0).toUpperCase() + mesNome.slice(1)} o Operador ${operador}, configurou ${data.total} rastreadores`;
+            } else {
+                resumoDiv.textContent = `Operador ${operador} configurou ${data.total} rastreadores`;
+            }
         } else {
             showToast(data.error || 'Erro ao carregar resumo', 'error');
         }
@@ -1101,7 +1114,10 @@ function handleFiltrarEstoque() {
 function handleFiltrarConfig() {
     const operador = document.getElementById('filtro-operador').value;
     const mes = document.getElementById('filtro-mes').value;
-    if (operador && mes) {
+    const dia = document.getElementById('filtro-dia').value;
+    if (operador && dia) {
+        loadResumoConfig(operador, null, dia);
+    } else if (operador && mes) {
         const [ano, mesNum] = mes.split('-');
         const mesAno = `${mesNum}/${ano}`;
         loadResumoConfig(operador, mesAno);
