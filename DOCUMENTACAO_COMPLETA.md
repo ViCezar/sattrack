@@ -269,8 +269,8 @@ A implementação de cache distribuído utilizando Redis ou Memcached poderia me
 
 A containerização da aplicação utilizando Docker facilitaria deployment em ambientes de nuvem e permitiria implementação de estratégias de alta disponibilidade e balanceamento de carga. Kubernetes poderia ser utilizado para orquestração de containers em ambientes de produção complexos.
 
----
-
+----
+Teste
 **Administrador Padrão:**
 - Usuário: admin
 - Senha: admin123
