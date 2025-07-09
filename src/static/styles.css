@@ -35,6 +35,9 @@ body {
 .sidebar-header {
     padding: 2rem 1.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .sidebar-header h2 {
@@ -46,7 +49,8 @@ body {
 }
 
 .sidebar-header img {
-    width: 240px;
+    width: 100%;
+    max-width: 240px;
     display: block;
     margin: 0 auto;
 }
@@ -115,6 +119,14 @@ body.sidebar-collapsed .sidebar .menu-item span {
 
 body.sidebar-collapsed .sidebar-header img {
     width: 40px;
+}
+
+body.sidebar-collapsed .sidebar-header {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 body.sidebar-collapsed .sidebar-toggle i {
