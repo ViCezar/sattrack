@@ -144,7 +144,7 @@ O sistema implementa dois tipos distintos de acesso que determinam quais funcion
 
 O dashboard principal fornece uma visão consolidada das métricas mais importantes do sistema, apresentadas através de cartões informativos com design moderno e cores que facilitam a interpretação rápida das informações. O cartão de "Total em Estoque" apresenta a quantidade total de dispositivos rastreadores disponíveis no inventário, calculada em tempo real baseada em todas as movimentações registradas no sistema.
 
-O cartão de "Movimentações do Mês" mostra o número total de transações de entrada e saída processadas no mês atual, fornecendo uma indicação da atividade operacional do sistema. Esta métrica é útil para gestores acompanharem tendências de movimentação e identificarem períodos de maior ou menor atividade.
+O cartão de "Total de Saídas" exibe a soma de todos os rastreadores que deixaram o estoque no mês atual. Essa métrica reinicia automaticamente a cada virada de mês, permitindo acompanhar com facilidade a quantidade de dispositivos expedidos no período.
 
 O cartão de "Colaboradores Ativos" apresenta a quantidade de configuradores atualmente ativos no sistema, incluindo apenas usuários com status ativo e tipo de acesso configurador. Esta informação é importante para planejamento de capacidade e distribuição de trabalho entre a equipe de configuração.
 
