@@ -28,6 +28,8 @@ body {
     overflow-y: auto;
     z-index: 1000;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar-header {
@@ -52,6 +54,7 @@ body {
 .sidebar-menu {
     list-style: none;
     padding: 1rem 0;
+    flex: 1;
 }
 
 .menu-item {
@@ -81,6 +84,41 @@ body {
 
 .menu-item span {
     font-weight: 500;
+}
+
+/* Botão de expansão da sidebar */
+.sidebar-toggle {
+    background: none;
+    border: none;
+    color: white;
+    padding: 1rem;
+    width: 100%;
+    cursor: pointer;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.sidebar-toggle i {
+    font-size: 1.2rem;
+}
+
+/* Layout reduzido da sidebar */
+body.sidebar-collapsed .sidebar {
+    width: 80px;
+}
+
+body.sidebar-collapsed .main-content {
+    margin-left: 80px;
+}
+
+body.sidebar-collapsed .sidebar .menu-item span {
+    display: none;
+}
+
+body.sidebar-collapsed .sidebar-header img {
+    width: 40px;
+}
+
+body.sidebar-collapsed .sidebar-toggle i {
+    transform: rotate(180deg);
 }
 
 /* Main Content */
