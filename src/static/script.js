@@ -389,7 +389,7 @@ async function loadDashboard() {
 
         if (response.ok) {
             document.getElementById('total-estoque').textContent = data.total_estoque;
-            document.getElementById('movimentacoes-mes').textContent = data.movimentacoes_mes;
+            document.getElementById('saidas-mes').textContent = data.saidas_mes;
             document.getElementById('rastreadores-configurados').textContent = data.rastreadores_configurados;
 
             // Carregar últimas movimentações

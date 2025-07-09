@@ -38,13 +38,14 @@ def get_dashboard():
         # Total em estoque
         total_estoque = db.session.query(func.sum(Estoque.quantidade_estoque)).scalar() or 0
         
-        # Movimentações do mês atual
+        # Total de saídas do mês atual
         hoje = date.today()
         primeiro_dia_mes = hoje.replace(day=1)
-        movimentacoes_mes = Movimentacao.query.filter(
+        saidas_mes = db.session.query(func.sum(Movimentacao.quantidade)).filter(
             Movimentacao.data >= primeiro_dia_mes,
-            Movimentacao.data <= hoje
-        ).count()
+            Movimentacao.data <= hoje,
+            Movimentacao.tipo == 'Saída'
+        ).scalar() or 0
         
         # Total de rastreadores configurados no mês
         rastreadores_configurados = db.session.query(func.sum(ConfiguracaoDiaria.quantidade)).filter(
@@ -59,7 +60,7 @@ def get_dashboard():
         
         return jsonify({
             'total_estoque': total_estoque,
-            'movimentacoes_mes': movimentacoes_mes,
+            'saidas_mes': saidas_mes,
             'rastreadores_configurados': rastreadores_configurados,
             'ultimas_movimentacoes': [mov.to_dict() for mov in ultimas_movimentacoes]
         }), 200
