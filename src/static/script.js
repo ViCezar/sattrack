@@ -15,6 +15,8 @@ const pageTitle = document.getElementById('page-title');
 const loadingOverlay = document.getElementById('loading-overlay');
 const toastContainer = document.getElementById('toast-container');
 const themeToggleBtn = document.getElementById('theme-toggle');
+const sidebarToggleBtn = document.getElementById('sidebar-toggle');
+const sidebarLogo = document.querySelector('.sidebar-logo');
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
@@ -127,6 +129,10 @@ function setupEventListeners() {
 
     // Alternar tema
     themeToggleBtn.addEventListener('click', toggleTheme);
+    // Expandir/retrair sidebar
+    if (sidebarToggleBtn) {
+        sidebarToggleBtn.addEventListener('click', toggleSidebar);
+    }
 }
 
 // Handlers de autenticação
@@ -1287,5 +1293,14 @@ function toggleTheme() {
     const newTheme = document.body.classList.contains('dark-mode') ? 'light' : 'dark';
     localStorage.setItem('theme', newTheme);
     applyTheme();
+}
+
+function toggleSidebar() {
+    document.body.classList.toggle('sidebar-collapsed');
+    if (document.body.classList.contains('sidebar-collapsed')) {
+        if (sidebarLogo) sidebarLogo.src = 'images/favicon.ico';
+    } else {
+        if (sidebarLogo) sidebarLogo.src = 'images/logo.png';
+    }
 }
 
