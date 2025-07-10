@@ -57,6 +57,7 @@ def create_app():
         if not admin:
             admin = User(username='admin', tipo_acesso='administrador')
             admin.set_password('admin123')
+            admin.primeiro_login = True
             db.session.add(admin)
             
             db.session.commit()

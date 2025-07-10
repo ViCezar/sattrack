@@ -1,6 +1,18 @@
 from flask import Blueprint, request, jsonify, session
 from src.models.user import db, User
 from src.models.rastreador import Colaborador
+import re
+
+
+def senha_valida(senha: str) -> bool:
+    """Valida se a senha atende aos requisitos de complexidade."""
+    if len(senha) > 12:
+        return False
+    if not re.search(r"\d", senha):
+        return False
+    if not re.search(r"[^A-Za-z0-9]", senha):
+        return False
+    return True
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -15,12 +27,22 @@ def login():
             return jsonify({'error': 'Username e password são obrigatórios'}), 400
         
         user = User.query.filter_by(username=username, ativo=True).first()
-        
+
         if user and user.check_password(password):
+            if user.primeiro_login:
+                nova_senha = data.get('new_password')
+                if not nova_senha:
+                    return jsonify({'error': 'É necessário criar uma nova senha'}), 403
+                if not senha_valida(nova_senha):
+                    return jsonify({'error': 'A senha deve ter até 12 caracteres, conter ao menos um número e um caractere especial'}), 400
+                user.set_password(nova_senha)
+                user.primeiro_login = False
+                db.session.commit()
+
             session['user_id'] = user.id
             session['username'] = user.username
             session['tipo_acesso'] = user.tipo_acesso
-            
+
             return jsonify({
                 'message': 'Login realizado com sucesso',
                 'user': user.to_dict()
@@ -74,6 +96,7 @@ def create_user():
         
         user = User(username=username, tipo_acesso=tipo_acesso)
         user.set_password(password)
+        user.primeiro_login = True
         
         db.session.add(user)
         

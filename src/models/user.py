@@ -12,6 +12,7 @@ class User(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     tipo_acesso = db.Column(db.String(20), nullable=False, default='configurador')  # 'configurador' ou 'administrador'
     ativo = db.Column(db.Boolean, default=True)
+    primeiro_login = db.Column(db.Boolean, default=True)
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
     
     def set_password(self, password):
@@ -26,6 +27,7 @@ class User(db.Model):
             'username': self.username,
             'tipo_acesso': self.tipo_acesso,
             'ativo': self.ativo,
+            'primeiro_login': self.primeiro_login,
             'data_criacao': self.data_criacao.strftime('%d/%m/%Y %H:%M')
         }
 
