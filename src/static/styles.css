@@ -218,7 +218,14 @@ body.sidebar-collapsed .sidebar-toggle i {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #1b5e20 0%, #2d7d32 33%, #388e3c 66%, #4caf50 100%);
+    background: linear-gradient(135deg, #1b5e20 5%, #2d7d32 25%, #388e3c 60%, #4caf50 90%);
+}
+
+.login-logo {
+    width: 100%;
+    max-width: 300px;
+    margin: auto;
+    display: block;
 }
 
 .login-card {
