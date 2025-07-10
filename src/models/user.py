@@ -8,7 +8,10 @@ class User(db.Model):
     __tablename__ = 'users'
     
     id = db.Column(db.Integer, primary_key=True)
+    # Nome exibido nas tabelas e relatórios
     username = db.Column(db.String(80), unique=True, nullable=False)
+    # E-mail utilizado para login
+    email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     tipo_acesso = db.Column(db.String(20), nullable=False, default='configurador')  # 'configurador' ou 'administrador'
     ativo = db.Column(db.Boolean, default=True)
@@ -24,6 +27,7 @@ class User(db.Model):
         return {
             'id': self.id,
             'username': self.username,
+            'email': self.email,
             'tipo_acesso': self.tipo_acesso,
             'ativo': self.ativo,
             'data_criacao': self.data_criacao.strftime('%d/%m/%Y %H:%M')

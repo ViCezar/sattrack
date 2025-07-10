@@ -53,15 +53,19 @@ def create_app():
         db.create_all()
         
         # Criar usuário administrador padrão se não existir
-        admin = User.query.filter_by(username='admin').first()
+        admin = User.query.filter_by(email='admin@example.com').first()
         if not admin:
-            admin = User(username='admin', tipo_acesso='administrador')
+            admin = User(
+                username='Administrador',
+                email='admin@example.com',
+                tipo_acesso='administrador'
+            )
             admin.set_password('admin123')
             db.session.add(admin)
             
             db.session.commit()
             print("Usuários padrão criados:")
-            print("Admin: admin / admin123")
+            print("Admin: admin@example.com / admin123")
 
 
         # Criar combinações de estoque padrão

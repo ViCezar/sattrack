@@ -683,14 +683,14 @@ async function loadUsuarios() {
             tbody.innerHTML = '';
 
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><i class="fas fa-users"></i><br>Nenhum usuário encontrado</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><i class="fas fa-users"></i><br>Nenhum usuário encontrado</td></tr>';
             } else {
                 const admins = data.filter(u => u.tipo_acesso === 'administrador');
                 const configuradores = data.filter(u => u.tipo_acesso === 'configurador');
 
                 if (admins.length > 0) {
                     const headerRow = document.createElement('tr');
-                    headerRow.innerHTML = '<td colspan="5" class="user-section-header">Administradores</td>';
+                    headerRow.innerHTML = '<td colspan="6" class="user-section-header">Administradores</td>';
                     tbody.appendChild(headerRow);
                     admins.forEach(user => {
                         const row = createUserRow(user);
@@ -700,7 +700,7 @@ async function loadUsuarios() {
 
                 if (configuradores.length > 0) {
                     const headerRow = document.createElement('tr');
-                    headerRow.innerHTML = '<td colspan="5" class="user-section-header">Configuradores</td>';
+                    headerRow.innerHTML = '<td colspan="6" class="user-section-header">Configuradores</td>';
                     tbody.appendChild(headerRow);
                     configuradores.forEach(user => {
                         const row = createUserRow(user);
@@ -859,6 +859,7 @@ function createUserRow(user) {
     const statusText = user.ativo ? 'Ativo' : 'Inativo';
     
     row.innerHTML = `
+        <td>${user.email}</td>
         <td>${user.username}</td>
         <td>${user.tipo_acesso}</td>
         <td><span class="badge ${statusBadge}">${statusText}</span></td>
@@ -1155,6 +1156,7 @@ function openUserModal(user = null) {
     if (user) {
         title.textContent = 'Editar Usuário';
         document.getElementById('user-id').value = user.id;
+        document.getElementById('user-email').value = user.email;
         document.getElementById('user-username').value = user.username;
         document.getElementById('user-password').value = '';
         document.getElementById('user-tipo').value = user.tipo_acesso;
@@ -1164,6 +1166,7 @@ function openUserModal(user = null) {
         title.textContent = 'Novo Usuário';
         form.reset();
         document.getElementById('user-id').value = '';
+        document.getElementById('user-email').value = '';
         document.getElementById('user-ativo').checked = true;
         deleteBtn.style.display = 'none';
     }

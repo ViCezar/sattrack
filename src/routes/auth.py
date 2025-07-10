@@ -8,13 +8,13 @@ auth_bp = Blueprint('auth', __name__)
 def login():
     try:
         data = request.get_json()
-        username = data.get('username')
+        email = data.get('email')
         password = data.get('password')
-        
-        if not username or not password:
-            return jsonify({'error': 'Username e password são obrigatórios'}), 400
-        
-        user = User.query.filter_by(username=username, ativo=True).first()
+
+        if not email or not password:
+            return jsonify({'error': 'Email e password são obrigatórios'}), 400
+
+        user = User.query.filter_by(email=email, ativo=True).first()
         
         if user and user.check_password(password):
             session['user_id'] = user.id
@@ -62,17 +62,18 @@ def create_user():
     
     try:
         data = request.get_json()
-        username = data.get('username')
+        username = data.get('username')  # nome exibido
+        email = data.get('email')
         password = data.get('password')
         tipo_acesso = data.get('tipo_acesso', 'configurador')
-        
-        if not username or not password:
-            return jsonify({'error': 'Username e password são obrigatórios'}), 400
-        
-        if User.query.filter_by(username=username).first():
-            return jsonify({'error': 'Username já existe'}), 400
-        
-        user = User(username=username, tipo_acesso=tipo_acesso)
+
+        if not username or not email or not password:
+            return jsonify({'error': 'Nome, email e password são obrigatórios'}), 400
+
+        if User.query.filter_by(email=email).first():
+            return jsonify({'error': 'Email já existe'}), 400
+
+        user = User(username=username, email=email, tipo_acesso=tipo_acesso)
         user.set_password(password)
         
         db.session.add(user)
@@ -104,6 +105,11 @@ def update_user(user_id):
 
         if 'username' in data:
             user.username = data['username']
+        if 'email' in data:
+            existente = User.query.filter_by(email=data['email']).first()
+            if existente and existente.id != user.id:
+                return jsonify({'error': 'Email já existe'}), 400
+            user.email = data['email']
         if user.tipo_acesso == 'administrador' and session.get('username') != 'Vinícius Cezar' and user.username != session.get('username'):
             # Administradores comuns não podem inativar, alterar tipo de acesso ou senha de outros administradores
             if (
