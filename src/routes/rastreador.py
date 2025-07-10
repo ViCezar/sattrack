@@ -20,7 +20,7 @@ def require_admin():
     if auth_error:
         return auth_error
     
-    if session.get('tipo_acesso') != 'administrador':
+    if session.get('tipo_acesso') != 'Administrador':
         return jsonify({'error': 'Acesso negado. Apenas administradores podem realizar esta ação.'}), 403
     return None
 

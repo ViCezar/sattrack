@@ -10,7 +10,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    tipo_acesso = db.Column(db.String(20), nullable=False, default='configurador')  # 'configurador' ou 'administrador'
+    tipo_acesso = db.Column(db.String(20), nullable=False, default='Configurador')  # 'Configurador' ou 'Administrador'
     ativo = db.Column(db.Boolean, default=True)
     data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
     

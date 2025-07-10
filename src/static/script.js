@@ -66,7 +66,7 @@ function showMainApp() {
     const menuHistoricoMovimentacoes = document.getElementById('menu-historico-movimentacoes');
     const menuUsuarios = document.getElementById('menu-usuarios');
     
-    if (currentUser.tipo_acesso === 'administrador') {
+    if (currentUser.tipo_acesso === 'Administrador') {
         menuMovimentacoes.style.display = 'flex';
         menuHistoricoMovimentacoes.style.display = 'flex';
         menuUsuarios.style.display = 'flex';
@@ -298,17 +298,17 @@ function initializeForm() {
 // Navegação entre seções
 function navigateToSection(section) {
     // Verificar permissões
-    if (section === 'movimentacoes' && currentUser.tipo_acesso !== 'administrador') {
+    if (section === 'movimentacoes' && currentUser.tipo_acesso !== 'Administrador') {
         showToast('Acesso negado. Apenas administradores podem acessar movimentações.', 'error');
         return;
     }
 
-    if (section === 'historico-movimentacoes' && currentUser.tipo_acesso !== 'administrador') {
+    if (section === 'historico-movimentacoes' && currentUser.tipo_acesso !== 'Administrador') {
         showToast('Acesso negado. Apenas administradores podem acessar histórico de movimentações.', 'error');
         return;
     }
     
-    if (section === 'usuarios' && currentUser.tipo_acesso !== 'administrador') {
+    if (section === 'usuarios' && currentUser.tipo_acesso !== 'Administrador') {
         showToast('Acesso negado. Apenas administradores podem gerenciar usuários.', 'error');
         return;
     }
@@ -685,8 +685,8 @@ async function loadUsuarios() {
             if (data.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><i class="fas fa-users"></i><br>Nenhum usuário encontrado</td></tr>';
             } else {
-                const admins = data.filter(u => u.tipo_acesso === 'administrador');
-                const configuradores = data.filter(u => u.tipo_acesso === 'configurador');
+                const admins = data.filter(u => u.tipo_acesso === 'Administrador');
+                const configuradores = data.filter(u => u.tipo_acesso === 'Configurador');
 
                 if (admins.length > 0) {
                     const headerRow = document.createElement('tr');

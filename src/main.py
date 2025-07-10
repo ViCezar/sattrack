@@ -52,10 +52,10 @@ def create_app():
     with app.app_context():
         db.create_all()
         
-        # Criar usuário administrador padrão se não existir
+        # Criar usuário Administrador padrão se não existir
         admin = User.query.filter_by(username='admin').first()
         if not admin:
-            admin = User(username='admin', tipo_acesso='administrador')
+            admin = User(username='admin', tipo_acesso='Administrador')
             admin.set_password('admin123')
             db.session.add(admin)
             

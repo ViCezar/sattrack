@@ -49,7 +49,7 @@ def get_current_user():
 
 @auth_bp.route('/users', methods=['GET'])
 def get_users():
-    if 'user_id' not in session or session.get('tipo_acesso') != 'administrador':
+    if 'user_id' not in session or session.get('tipo_acesso') != 'Administrador':
         return jsonify({'error': 'Acesso negado'}), 403
     
     users = User.query.all()
@@ -57,14 +57,14 @@ def get_users():
 
 @auth_bp.route('/users', methods=['POST'])
 def create_user():
-    if 'user_id' not in session or session.get('tipo_acesso') != 'administrador':
+    if 'user_id' not in session or session.get('tipo_acesso') != 'Administrador':
         return jsonify({'error': 'Acesso negado'}), 403
     
     try:
         data = request.get_json()
         username = data.get('username')
         password = data.get('password')
-        tipo_acesso = data.get('tipo_acesso', 'configurador')
+        tipo_acesso = data.get('tipo_acesso', 'Configurador')
         
         if not username or not password:
             return jsonify({'error': 'Username e password são obrigatórios'}), 400
@@ -77,8 +77,8 @@ def create_user():
         
         db.session.add(user)
         
-        # Se for configurador, criar também um colaborador
-        if tipo_acesso == 'configurador':
+        # Se for Configurador, criar também um colaborador
+        if tipo_acesso == 'Configurador':
             colaborador = Colaborador(nome=username)
             db.session.add(colaborador)
         
@@ -95,7 +95,7 @@ def create_user():
 
 @auth_bp.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
-    if 'user_id' not in session or session.get('tipo_acesso') != 'administrador':
+    if 'user_id' not in session or session.get('tipo_acesso') != 'Administrador':
         return jsonify({'error': 'Acesso negado'}), 403
     
     try:
@@ -104,11 +104,11 @@ def update_user(user_id):
 
         if 'username' in data:
             user.username = data['username']
-        if user.tipo_acesso == 'administrador' and session.get('username') != 'Vinícius Cezar' and user.username != session.get('username'):
+        if user.tipo_acesso == 'Administrador' and session.get('username') != 'Vinícius Cezar' and user.username != session.get('username'):
             # Administradores comuns não podem inativar, alterar tipo de acesso ou senha de outros administradores
             if (
                 ('ativo' in data and data['ativo'] is False)
-                or ('tipo_acesso' in data and data['tipo_acesso'] != 'administrador')
+                or ('tipo_acesso' in data and data['tipo_acesso'] != 'Administrador')
                 or ('password' in data and data['password'])
             ):
                 return jsonify({'error': 'Você não possui permissão para alterar outros administradores!'}), 403
@@ -132,18 +132,18 @@ def update_user(user_id):
 
 @auth_bp.route('/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    if 'user_id' not in session or session.get('tipo_acesso') != 'administrador':
+    if 'user_id' not in session or session.get('tipo_acesso') != 'Administrador':
         return jsonify({'error': 'Acesso negado'}), 403
     
     try:
         user = User.query.get_or_404(user_id)
 
         # Administradores comuns não podem excluir outros administradores
-        if user.tipo_acesso == 'administrador' and session.get('username') != 'Vinícius Cezar' and user.username != session.get('username'):
+        if user.tipo_acesso == 'Administrador' and session.get('username') != 'Vinícius Cezar' and user.username != session.get('username'):
             return jsonify({'error': 'Você não possui permissão para excluir outros administradores!'}), 403
 
-        # If the user is a configurador, inactivate the related Colaborador
-        if user.tipo_acesso == 'configurador':
+        # Se o usuário for Configurador, inativar o Colaborador relacionado
+        if user.tipo_acesso == 'Configurador':
             colaborador = Colaborador.query.filter_by(nome=user.username).first()
             if colaborador:
                 colaborador.ativo = False

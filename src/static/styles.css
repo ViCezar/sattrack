@@ -186,12 +186,12 @@ body.sidebar-collapsed .sidebar-toggle i {
     text-transform: uppercase;
 }
 
-.user-badge.admin {
+.user-badge.Administrador {
     background: #d4edda;
     color: #155724;
 }
 
-.user-badge.configurador {
+.user-badge.Configurador {
     background: #cce5ff;
     color: #004085;
 }
