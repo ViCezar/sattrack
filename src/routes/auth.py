@@ -105,9 +105,12 @@ def update_user(user_id):
         if 'username' in data:
             user.username = data['username']
         if user.tipo_acesso == 'administrador' and session.get('username') != 'Vinícius Cezar' and user.username != session.get('username'):
-            # Administradores comuns não podem inativar ou alterar outros administradores
-            if ('ativo' in data and data['ativo'] is False) or (
-                    'tipo_acesso' in data and data['tipo_acesso'] != 'administrador'):
+            # Administradores comuns não podem inativar, alterar tipo de acesso ou senha de outros administradores
+            if (
+                ('ativo' in data and data['ativo'] is False)
+                or ('tipo_acesso' in data and data['tipo_acesso'] != 'administrador')
+                or ('password' in data and data['password'])
+            ):
                 return jsonify({'error': 'Você não possui permissão para alterar outros administradores!'}), 403
         if 'tipo_acesso' in data:
             user.tipo_acesso = data['tipo_acesso']
