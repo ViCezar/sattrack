@@ -5,6 +5,15 @@ from src.models.rastreador import (
     ConfiguracaoDiaria, HistoricoConfig, Estoque
 )
 from datetime import datetime, date
+from zoneinfo import ZoneInfo
+
+BR_TZ = ZoneInfo("America/Sao_Paulo")
+
+def now_brasilia():
+    return datetime.now(BR_TZ)
+
+def today_brasilia():
+    return now_brasilia().date()
 from sqlalchemy import func, desc
 from collections import defaultdict
 
@@ -39,7 +48,7 @@ def get_dashboard():
         total_estoque = db.session.query(func.sum(Estoque.quantidade_estoque)).scalar() or 0
         
         # Total de saídas do mês atual
-        hoje = date.today()
+        hoje = today_brasilia()
         primeiro_dia_mes = hoje.replace(day=1)
         saidas_mes = db.session.query(func.sum(Movimentacao.quantidade)).filter(
             Movimentacao.data >= primeiro_dia_mes,
@@ -152,7 +161,7 @@ def registrar_movimentacao():
             if estoque.quantidade_estoque < 0:
                 return jsonify({'error': 'Quantidade em estoque insuficiente'}), 400
         
-        estoque.data_ultima_alteracao = datetime.utcnow()
+        estoque.data_ultima_alteracao = now_brasilia()
         
         db.session.commit()
 
@@ -186,7 +195,7 @@ def delete_movimentacao(mov_id):
                 estoque.quantidade_estoque += mov.quantidade
             if estoque.quantidade_estoque < 0:
                 estoque.quantidade_estoque = 0
-            estoque.data_ultima_alteracao = datetime.utcnow()
+            estoque.data_ultima_alteracao = now_brasilia()
 
         historico = HistoricoMovimentacao.query.filter_by(
             data=mov.data,
@@ -238,7 +247,7 @@ def registrar_configuracao():
         if not colaborador:
             return jsonify({'error': 'Colaborador não encontrado'}), 404
         
-        hoje = date.today()
+        hoje = today_brasilia()
         
         # Verificar se já existe configuração para hoje
         config_existente = ConfiguracaoDiaria.query.filter_by(
@@ -303,7 +312,7 @@ def get_historico_config():
 
     try:
         # Buscar configurações diárias do mês atual
-        hoje = date.today()
+        hoje = today_brasilia()
         primeiro_dia_mes = hoje.replace(day=1)
 
         # Filtros opcionais
@@ -355,7 +364,7 @@ def salvar_historico_diario():
         return admin_error
     
     try:
-        hoje = date.today()
+        hoje = today_brasilia()
         mes_ano = hoje.strftime('%m/%Y')
         
         # Buscar todas as configurações de hoje

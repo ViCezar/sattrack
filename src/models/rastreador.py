@@ -1,19 +1,28 @@
 from src.models.user import db
 from datetime import datetime, date
+from zoneinfo import ZoneInfo
 from sqlalchemy import func
+
+BR_TZ = ZoneInfo("America/Sao_Paulo")
+
+def now_brasilia():
+    return datetime.now(BR_TZ)
+
+def today_brasilia():
+    return now_brasilia().date()
 
 class Movimentacao(db.Model):
     __tablename__ = 'movimentacoes'
     
     id = db.Column(db.Integer, primary_key=True)
-    data = db.Column(db.Date, nullable=False, default=date.today)
+    data = db.Column(db.Date, nullable=False, default=today_brasilia)
     modelo_rastreador = db.Column(db.String(50), nullable=False)
     operadora = db.Column(db.String(50), nullable=False)
     quantidade = db.Column(db.Integer, nullable=False)
     tipo = db.Column(db.String(10), nullable=False)  # 'Entrada' ou 'Saída'
     solicitante = db.Column(db.String(100), nullable=False)
     operador = db.Column(db.String(100), nullable=False)
-    data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
+    data_criacao = db.Column(db.DateTime, default=now_brasilia)
     
     def to_dict(self):
         return {
@@ -25,7 +34,7 @@ class Movimentacao(db.Model):
             'tipo': self.tipo,
             'solicitante': self.solicitante,
             'operador': self.operador,
-            'data_criacao': self.data_criacao.strftime('%d/%m/%Y %H:%M')
+            'data_criacao': self.data_criacao.astimezone(BR_TZ).strftime('%d/%m/%Y %H:%M')
         }
 
 class HistoricoMovimentacao(db.Model):
@@ -40,13 +49,13 @@ class HistoricoMovimentacao(db.Model):
     solicitante = db.Column(db.String(100), nullable=False)
     operador = db.Column(db.String(100), nullable=False)
     mes_ano = db.Column(db.String(7), nullable=False)  # formato MM/YYYY
-    data_backup = db.Column(db.DateTime, default=datetime.utcnow)
+    data_backup = db.Column(db.DateTime, default=now_brasilia)
 
     def to_dict(self):
         return {
             'id': self.id,
             'data': self.data.strftime('%d/%m/%Y'),
-            'hora_backup': self.data_backup.strftime('%H:%M'),
+            'hora_backup': self.data_backup.astimezone(BR_TZ).strftime('%H:%M'),
             'modelo_rastreador': self.modelo_rastreador,
             'operadora': self.operadora,
             'quantidade': self.quantidade,
@@ -62,7 +71,7 @@ class Colaborador(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False, unique=True)
     ativo = db.Column(db.Boolean, default=True)
-    data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
+    data_criacao = db.Column(db.DateTime, default=now_brasilia)
     
     def get_quantidade_dia_atual(self):
         hoje = date.today()
@@ -99,9 +108,9 @@ class ConfiguracaoDiaria(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     colaborador_id = db.Column(db.Integer, db.ForeignKey('colaboradores.id'), nullable=False)
-    data = db.Column(db.Date, nullable=False, default=date.today)
+    data = db.Column(db.Date, nullable=False, default=today_brasilia)
     quantidade = db.Column(db.Integer, nullable=False)
-    data_criacao = db.Column(db.DateTime, default=datetime.utcnow)
+    data_criacao = db.Column(db.DateTime, default=now_brasilia)
     
     colaborador = db.relationship('Colaborador', backref='configuracoes_diarias')
     
@@ -124,7 +133,7 @@ class HistoricoConfig(db.Model):
     quantidade_dia_atual = db.Column(db.Integer, nullable=False)
     quantidade_total_mes = db.Column(db.Integer, nullable=False)
     mes_ano = db.Column(db.String(7), nullable=False)  # formato MM/YYYY
-    data_backup = db.Column(db.DateTime, default=datetime.utcnow)
+    data_backup = db.Column(db.DateTime, default=now_brasilia)
     
     def to_dict(self):
         return {
@@ -143,7 +152,7 @@ class Estoque(db.Model):
     modelo_rastreador = db.Column(db.String(50), nullable=False)
     operadora = db.Column(db.String(50), nullable=False)
     quantidade_estoque = db.Column(db.Integer, nullable=False, default=0)
-    data_ultima_alteracao = db.Column(db.DateTime, default=datetime.utcnow)
+    data_ultima_alteracao = db.Column(db.DateTime, default=now_brasilia)
     
     __table_args__ = (db.UniqueConstraint('modelo_rastreador', 'operadora'),)
     
@@ -153,6 +162,6 @@ class Estoque(db.Model):
             'modelo_rastreador': self.modelo_rastreador,
             'operadora': self.operadora,
             'quantidade_estoque': self.quantidade_estoque,
-            'data_ultima_alteracao': self.data_ultima_alteracao.strftime('%d/%m/%Y %H:%M')
+            'data_ultima_alteracao': self.data_ultima_alteracao.astimezone(BR_TZ).strftime('%d/%m/%Y %H:%M')
         }
 
