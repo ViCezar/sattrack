@@ -450,12 +450,20 @@ async function loadMovimentacoes() {
     }
 }
 
-async function loadHistoricoMovimentacoes(dataFiltro = '') {
+async function loadHistoricoMovimentacoes(dataFiltro = '', tipoFiltro = 'Todos') {
     try {
         showLoading();
         let url = `${API_BASE}/historico-movimentacoes`;
+        const params = new URLSearchParams();
         if (dataFiltro) {
-            url += `?data=${encodeURIComponent(dataFiltro)}`;
+            params.append('data', dataFiltro);
+        }
+        if (tipoFiltro && tipoFiltro !== 'Todos') {
+            params.append('tipo', tipoFiltro);
+        }
+        const queryString = params.toString();
+        if (queryString) {
+            url += `?${queryString}`;
         }
 
         const response = await fetch(url, {
@@ -1113,11 +1121,8 @@ async function handleSalvarHistorico() {
 
 function handleFiltrarHistorico() {
     const data = document.getElementById('filtro-data').value;
-    if (data) {
-        loadHistoricoMovimentacoes(data);
-    } else {
-        loadHistoricoMovimentacoes();
-    }
+    const tipo = document.getElementById('filtro-tipo').value;
+    loadHistoricoMovimentacoes(data, tipo);
 }
 
 function handleFiltrarResumo() {
