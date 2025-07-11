@@ -1304,3 +1304,11 @@ function toggleSidebar() {
     }
 }
 
+document.getElementById('solicitante').addEventListener('input', function() {
+
+    let valorLimpo = this.value.replace(/[^a-zA-Z0-9\s]/g, '');
+
+    this.value = valorLimpo.replace(/\b\w+/g, function(palavra) {
+        return palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
+    });
+});
