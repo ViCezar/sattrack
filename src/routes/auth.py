@@ -110,6 +110,7 @@ def update_user(user_id):
                 ('ativo' in data and data['ativo'] is False)
                 or ('tipo_acesso' in data and data['tipo_acesso'] != 'administrador')
                 or ('password' in data and data['password'])
+                or ('username' in data and data['username'])
             ):
                 return jsonify({'error': 'Você não possui permissão para alterar outros administradores!'}), 403
         if 'tipo_acesso' in data:
