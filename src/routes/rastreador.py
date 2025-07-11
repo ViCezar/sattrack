@@ -215,7 +215,22 @@ def get_colaboradores():
         return auth_error
     
     try:
-        colaboradores = Colaborador.query.filter_by(ativo=True).all()
+        hoje = date.today()
+        primeiro_dia_mes = hoje.replace(day=1)
+
+        # Subquery para colaboradores que tiveram pelo menos uma entrada no mês
+        colaboradores_com_entrada = db.session.query(
+            ConfiguracaoDiaria.colaborador_id
+        ).filter(
+            ConfiguracaoDiaria.data >= primeiro_dia_mes,
+            ConfiguracaoDiaria.data <= hoje
+        ).distinct()
+
+        colaboradores = Colaborador.query.filter(
+            (Colaborador.ativo == True) |
+            (Colaborador.id.in_(colaboradores_com_entrada))
+        ).all()
+
         return jsonify([col.to_dict() for col in colaboradores]), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
