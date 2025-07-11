@@ -1251,6 +1251,17 @@ async function cancelConfiguracao(id) {
     }
 }
 
+document.getElementById('solicitante').addEventListener('input', function () {
+    // Remove todos os caracteres que não sejam letras (com acento) ou espaço
+    let valorLimpo = this.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove acentos combinantes
+        .replace(/[^A-Za-z\sÀ-ÿ]/g, ''); // remove números e símbolos, permite letras acentuadas e espaço
+
+    // Coloca a primeira letra de cada palavra em maiúscula
+    this.value = valorLimpo.replace(/\b\w+/g, function(palavra) {
+        return palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
+    });
+});
+
 // Funções utilitárias
 function showLoading() {
     loadingOverlay.style.display = 'flex';

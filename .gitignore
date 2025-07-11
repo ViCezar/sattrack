@@ -3,4 +3,7 @@ instance/*.db
 src/database/*.db
 *.db
 *.pyc
-__pycache__/
+*.pyo
+**/__pycache__/
+
+
