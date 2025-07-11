@@ -1260,6 +1260,17 @@ function hideLoading() {
     loadingOverlay.style.display = 'none';
 }
 
+document.getElementById('solicitante').addEventListener('input', function () {
+    // Remove todos os caracteres que não sejam letras (com acento) ou espaço
+    let valorLimpo = this.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "") // remove acentos combinantes
+        .replace(/[^A-Za-z\sÀ-ÿ]/g, ''); // remove números e símbolos, permite letras acentuadas e espaço
+
+    // Coloca a primeira letra de cada palavra em maiúscula
+    this.value = valorLimpo.replace(/\b\w+/g, function(palavra) {
+        return palavra.charAt(0).toUpperCase() + palavra.slice(1).toLowerCase();
+    });
+});
+    
 function showToast(message, type = 'success') {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
