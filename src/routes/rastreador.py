@@ -499,12 +499,16 @@ def get_historico_movimentacoes():
     try:
         data_str = request.args.get('data')
         mes_ano = request.args.get('mesAno')
+        tipo = request.args.get('tipo')
         query = HistoricoMovimentacao.query
         if data_str:
             filtro_data = datetime.strptime(data_str, '%Y-%m-%d').date()
             query = query.filter_by(data=filtro_data)
         elif mes_ano:
             query = query.filter_by(mes_ano=mes_ano)
+
+        if tipo and tipo != 'Todos':
+            query = query.filter_by(tipo=tipo)
 
         historico = query.order_by(desc(HistoricoMovimentacao.data)).all()
         return jsonify([mov.to_dict() for mov in historico]), 200
